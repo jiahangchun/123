@@ -1,4 +1,4 @@
-package com.jiahangchun.test.tp.swagger;
+package com.jiahangchun.test.tp.swagger.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;

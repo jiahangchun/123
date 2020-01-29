@@ -1,9 +1,15 @@
 package com.jiahangchun.test.tp.common;
 
 
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpMethod;
+
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author jiahangchun
@@ -89,4 +95,35 @@ public class CommonUtil {
         return forName(className, true);
     }
 
+
+    public static HttpMethod getMethodByName(String name) {
+        if (CommonUtil.isEmpty(name)) {
+            return null;
+        }
+        return Arrays.asList(HttpMethod.class.getEnumConstants())
+                .stream()
+                .filter(e -> Objects.equals(e.name().toLowerCase(), name.toLowerCase()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /*********************************** 拷贝 *************************************************/
+
+    public static <T> T copyProperties(Object from, Class<T> toClass) throws RuntimeException {
+        if (from == null) {
+            return null;
+        }
+        T to;
+        try {
+            to = toClass.newInstance();
+            copyProperties(from, to);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return to;
+    }
+
+    public static void copyProperties(Object fromObj, Object toObj) throws RuntimeException {
+        BeanUtils.copyProperties(fromObj, toObj);
+    }
 }
