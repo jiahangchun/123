@@ -25,4 +25,12 @@ public interface ApiResponseService {
      * @throws BizException
      */
     public List<SwaggerApiListVo> getSwaggerData(SwaggerApiListParam swaggerApiListParam) throws BizException;
+
+    /**
+     * 获取详情
+     *
+     * @param key
+     * @return
+     */
+    public SwaggerApiListVo getSwaggerVo(String key);
 }

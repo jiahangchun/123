@@ -1,6 +1,5 @@
 package com.jiahangchun.test.tp.swagger.dto;
 
-import com.jiahangchun.test.tp.swagger.dto.Operation;
 import lombok.Data;
 
 @Data

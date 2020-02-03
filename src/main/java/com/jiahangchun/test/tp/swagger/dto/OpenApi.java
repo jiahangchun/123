@@ -19,4 +19,6 @@ public class OpenApi {
     private List<Tag> tags = null;
 
     private LinkedHashMap<String, PathItem>  paths;
+
+    private LinkedHashMap<String, ReturnResult> definitions;
 }

@@ -38,4 +38,8 @@ public class SwaggerApiListDto {
      */
     private List<Parameter> parameters;
 
+    /**
+     * 返回类型
+     */
+    private List<ResultData> resultData;
 }

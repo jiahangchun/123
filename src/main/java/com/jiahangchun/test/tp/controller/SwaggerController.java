@@ -37,4 +37,17 @@ public class SwaggerController {
     public List<SwaggerApiListVo> queryApiList(@RequestBody(required = false) SwaggerApiListParam swaggerApiListParam) {
         return apiResponseService.getSwaggerData(swaggerApiListParam);
     }
+
+    /**
+     * 获取某个接口的详情
+     *
+     * @param key
+     * @return
+     */
+    @GetMapping("/get/swagger/api")
+    public SwaggerApiListVo getApiVo(@RequestParam("key") String key) {
+        return apiResponseService.getSwaggerVo(key);
+    }
+
+
 }
