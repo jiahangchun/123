@@ -10,6 +10,6 @@ public class ReturnResult {
 
     private String type;
 
-    private Map<String,String> properties;
+    private Map<String,ReturnProperty> properties;
 
 }

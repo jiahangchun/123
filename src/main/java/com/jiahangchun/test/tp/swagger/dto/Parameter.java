@@ -22,4 +22,6 @@ public class Parameter {
      * 对象的应用
      */
     private Map<String,String> schema;
+
+    private String ref;
 }

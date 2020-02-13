@@ -3,6 +3,8 @@ package com.jiahangchun.test.tp.controller;
 import com.alibaba.fastjson.JSON;
 import com.jiahangchun.test.tp.swagger.ApiResponseService;
 import com.jiahangchun.test.tp.swagger.parm.SwaggerApiListParam;
+import com.jiahangchun.test.tp.swagger.vo.DefinitionVo;
+import com.jiahangchun.test.tp.swagger.vo.SwaggerApiDetailVo;
 import com.jiahangchun.test.tp.swagger.vo.SwaggerApiListVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +47,19 @@ public class SwaggerController {
      * @return
      */
     @GetMapping("/get/swagger/api")
-    public SwaggerApiListVo getApiVo(@RequestParam("key") String key) {
+    public SwaggerApiDetailVo getApiVo(@RequestParam("key") String key) {
         return apiResponseService.getSwaggerVo(key);
+    }
+
+    /**
+     * 获取所有额外定义的类
+     *
+     * @param key
+     * @return
+     */
+    @GetMapping("/get/definition/dto")
+    public DefinitionVo getDefinition(@RequestParam("key") String key) {
+        return apiResponseService.getDefinitionVo(key);
     }
 
 

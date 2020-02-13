@@ -1,4 +1,4 @@
-package com.jiahangchun.test.tp.swagger.dto;
+package com.jiahangchun.test.tp.swagger.vo;
 
 import lombok.Data;
 import org.springframework.http.HttpMethod;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod;
 import java.util.List;
 
 @Data
-public class SwaggerApiListDto {
+public class SwaggerApiDetailVo {
 
     /**
      * 所属的模块
@@ -14,14 +14,14 @@ public class SwaggerApiListDto {
     private List<String> tags;
 
     /**
+     * 模块的文案
+     */
+    private String tagStr;
+
+    /**
      * 该接口唯一标识码
      */
     private String key;
-
-    /**
-     * key Str
-     */
-    private String keyStr;
 
     /**
      * 请求接口
@@ -39,12 +39,13 @@ public class SwaggerApiListDto {
     private String description;
 
     /**
-     * 参数要求
+     * 请求参数
      */
-    private List<Parameter> parameters;
+    private List<RequestParamVo> requestParamVos;
 
     /**
-     * 返回类型
+     * 返回结果参数
      */
-    private ResultData resultData;
+    private List<RequestResultVo> requestResultVos;
+
 }

@@ -8,7 +8,7 @@ import com.jiahangchun.test.tp.common.CommonUtil;
 import com.jiahangchun.test.tp.swagger.ApiResponseService;
 import com.jiahangchun.test.tp.swagger.dto.*;
 import com.jiahangchun.test.tp.swagger.parm.SwaggerApiListParam;
-import com.jiahangchun.test.tp.swagger.vo.SwaggerApiListVo;
+import com.jiahangchun.test.tp.swagger.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONUtil;
 import org.springframework.beans.BeanUtils;
@@ -46,6 +46,12 @@ public class ApiResponseServiceImpl implements ApiResponseService {
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final String SAMPLE_SWAGGER_DATA = "{\"swagger\":\"2.0\",\"info\":{\"description\":\"项目开发文档\",\"version\":\"1.1.0\",\"title\":\"service-convenient-jiahangchun\",\"termsOfService\":\"192.168.2.198:8080\"},\"host\":\"localhost:8080\",\"basePath\":\"/platform\",\"tags\":[{\"name\":\"多地址改造\",\"description\":\"Ship Id Controller\"}],\"paths\":{\"/crm/shipId/bind/{receiveAddressId}/{userId}\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"将某个shipId和某个user关联在一起\",\"operationId\":\"bindShipIdUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"name\":\"receiveAddressId\",\"in\":\"path\",\"description\":\"receiveAddressId\",\"required\":true,\"type\":\"integer\",\"format\":\"int64\"},{\"name\":\"userId\",\"in\":\"path\",\"description\":\"userId\",\"required\":true,\"type\":\"integer\",\"format\":\"int64\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«boolean»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/create/shipId\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"创建全新的shipId\",\"operationId\":\"createShipIdUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"in\":\"body\",\"name\":\"createShipIdParam\",\"description\":\"createShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/创建shipId的参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«boolean»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/create/shipId/pre\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"创建全新的shipId的校验\",\"operationId\":\"createShipIdPreUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"in\":\"body\",\"name\":\"createShipIdParam\",\"description\":\"createShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/创建shipId的参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«List«创建shipId时的预参数»»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/crm/list\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"CRM 所有人的shipId列表查询\",\"operationId\":\"queryCrmShipIdListUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"in\":\"body\",\"name\":\"queryShipIdParam\",\"description\":\"queryShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/查询参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«Page«客户主档返回列表»»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/eggBuy/shipId/{userId}\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"eggBuy可以选择的shipId列表\",\"operationId\":\"eggBuyShipIdListUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"name\":\"userId\",\"in\":\"path\",\"description\":\"userId\",\"required\":true,\"type\":\"integer\",\"format\":\"int64\"},{\"in\":\"body\",\"name\":\"queryShipIdParam\",\"description\":\"queryShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/查询参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«Page«客户主档返回列表»»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/get/default/shipId\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"获取客户默认的shipId\",\"operationId\":\"getDefaultShipIdUsingPOST_1\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"in\":\"body\",\"name\":\"queryShipIdParam\",\"description\":\"queryShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/查询参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«客户主档返回列表»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/get/{shipId}\":{\"get\":{\"tags\":[\"多地址改造\"],\"summary\":\"获取shipId详情\",\"operationId\":\"getShipIdUsingGET\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"name\":\"shipId\",\"in\":\"path\",\"description\":\"shipId\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«shipId详情»\"}},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/list\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"CRM主档列表查询\",\"operationId\":\"queryUserShipIdListUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"in\":\"body\",\"name\":\"queryShipIdParam\",\"description\":\"queryShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/查询参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«Page«客户主档返回列表»»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/list/other\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"寻找其他人的但是没有被关联在当前用户身上的shipId\",\"operationId\":\"queryCrmSelectShipIdUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"in\":\"body\",\"name\":\"queryShipIdParam\",\"description\":\"queryShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/查询参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«Page«客户主档返回列表»»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/quotation/shipId/{userId}\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"quotation可以选择的shipId列表\",\"operationId\":\"quotationShipIdListUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"name\":\"userId\",\"in\":\"path\",\"description\":\"userId\",\"required\":true,\"type\":\"integer\",\"format\":\"int64\"},{\"in\":\"body\",\"name\":\"queryShipIdParam\",\"description\":\"queryShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/查询参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«Page«客户主档返回列表»»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/remove/{receiveAddressId}/{userId}\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"移除shipId和当前客户的关系\",\"operationId\":\"removeCrmShipIdUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"name\":\"receiveAddressId\",\"in\":\"path\",\"description\":\"receiveAddressId\",\"required\":true,\"type\":\"integer\",\"format\":\"int64\"},{\"name\":\"userId\",\"in\":\"path\",\"description\":\"userId\",\"required\":true,\"type\":\"integer\",\"format\":\"int64\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«boolean»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}},\"/crm/shipId/update/shipId\":{\"post\":{\"tags\":[\"多地址改造\"],\"summary\":\"更新shipId\",\"operationId\":\"updateShipIdUsingPOST\",\"consumes\":[\"application/json\"],\"produces\":[\"*/*\"],\"parameters\":[{\"name\":\"token\",\"in\":\"header\",\"description\":\"令牌校验\",\"required\":true,\"type\":\"string\",\"default\":\"7IRRIl%2FdWT76pV2mLBipp8%2BHSO0gCdU8XSidi8vhtEdCk01o5PX67XKsfbtduWZC0WxUdTj%2Fkbz5zxYmKAYKpMDi4JmF9bqqGvg451EjVyJe1XC0RSIn5UoT8%2BpPF%2B45MYzLBvrd1tJGJUZFl625nQ%3D%3D\"},{\"name\":\"countryId\",\"in\":\"header\",\"description\":\"countryId\",\"required\":true,\"type\":\"string\",\"default\":\"1001\"},{\"in\":\"body\",\"name\":\"updateShipIdParam\",\"description\":\"updateShipIdParam\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/更新shipId的参数\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/返回类«boolean»\"}},\"201\":{\"description\":\"Created\"},\"401\":{\"description\":\"Unauthorized\"},\"403\":{\"description\":\"Forbidden\"},\"404\":{\"description\":\"Not Found\"}}}}},\"definitions\":{\"Page«客户主档返回列表»\":{\"type\":\"object\",\"properties\":{\"items\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/客户主档返回列表\"}},\"limit\":{\"type\":\"integer\",\"format\":\"int32\"},\"offset\":{\"type\":\"integer\",\"format\":\"int32\"},\"page\":{\"type\":\"integer\",\"format\":\"int32\"},\"sortField\":{\"type\":\"string\"},\"sortOrder\":{\"type\":\"string\"},\"startPage\":{\"type\":\"integer\",\"format\":\"int32\"},\"total\":{\"type\":\"integer\",\"format\":\"int32\"}}},\"shipId详情\":{\"type\":\"object\",\"properties\":{\"city\":{\"type\":\"string\",\"example\":\"杭州市\",\"description\":\"市\"},\"cityId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":4,\"description\":\"市Id\"},\"companyName\":{\"type\":\"string\",\"example\":\"名字叫Xxx\",\"description\":\"客户名称\"},\"contact\":{\"type\":\"string\",\"example\":\"人物的描述\",\"description\":\"联系方式\"},\"detailAddress\":{\"type\":\"string\",\"example\":\"西湖区天和华丰\",\"description\":\"详细地址\"},\"district\":{\"type\":\"string\",\"example\":\"余杭区\",\"description\":\"区\"},\"districtId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":5,\"description\":\"区Id\"},\"id\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":\"主键\",\"description\":\"主键\"},\"lat\":{\"type\":\"number\",\"format\":\"double\",\"example\":21.29612,\"description\":\"纬度\"},\"lng\":{\"type\":\"number\",\"format\":\"double\",\"example\":113.157337,\"description\":\"经度\"},\"mobile\":{\"type\":\"string\",\"example\":\"15700082377\",\"description\":\"手机号码\"},\"postCode\":{\"type\":\"string\",\"example\":\"311122\",\"description\":\"邮编\"},\"province\":{\"type\":\"string\",\"example\":\"浙江省\",\"description\":\"省的名称\"},\"provinceId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":22,\"description\":\"省Id\"},\"shipId\":{\"type\":\"string\",\"example\":\"SH1999_1\",\"description\":\"shipId\"},\"shipIdPhotoParams\":{\"type\":\"array\",\"description\":\"图片\",\"items\":{\"$ref\":\"#/definitions/图片\"}}}},\"创建shipId时的预参数\":{\"type\":\"object\",\"properties\":{\"companyName\":{\"type\":\"string\",\"example\":\"名字叫Xxx\",\"description\":\"客户名称\"},\"shipId\":{\"type\":\"string\",\"example\":\"SH10025_2\",\"description\":\"shipId\"}}},\"创建shipId的参数\":{\"type\":\"object\",\"properties\":{\"cityId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":4,\"description\":\"市Id\"},\"companyName\":{\"type\":\"string\",\"example\":\"名字叫Xxx\",\"description\":\"公司名称\"},\"contact\":{\"type\":\"string\",\"example\":\"人物的描述\",\"description\":\"人员的描述\"},\"countryId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":5,\"description\":\"国家Id\"},\"detailAddress\":{\"type\":\"string\",\"example\":\"西湖区天和华丰\",\"description\":\"详细地址\"},\"districtId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":5,\"description\":\"区Id\"},\"gps\":{\"type\":\"string\",\"example\":\"Lnt:113.157337 Lat:2222\",\"description\":\"经纬度，不用页面传递\"},\"lat\":{\"type\":\"number\",\"format\":\"double\",\"example\":21.29612,\"description\":\"纬度\"},\"lng\":{\"type\":\"number\",\"format\":\"double\",\"example\":113.157337,\"description\":\"经度\"},\"mobile\":{\"type\":\"string\",\"example\":\"15700082377\",\"description\":\"手机号码\"},\"postCode\":{\"type\":\"string\",\"example\":\"311122\",\"description\":\"邮编\"},\"prefix\":{\"type\":\"string\",\"example\":\"66\",\"description\":\"手机前缀\"},\"provinceId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":22,\"description\":\"省Id\"},\"shipIdPhotoParams\":{\"type\":\"array\",\"description\":\"图片\",\"items\":{\"$ref\":\"#/definitions/图片\"}},\"userId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":17965,\"description\":\"userId\"}}},\"图片\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"example\":\"Xxx的门店图片\",\"description\":\"图片名称\"},\"photoId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":1022,\"description\":\"照片的id\"},\"url\":{\"type\":\"string\",\"example\":\"/aa/bb\",\"description\":\"图片URl\"}}},\"客户主档返回列表\":{\"type\":\"object\",\"properties\":{\"canRemove\":{\"type\":\"boolean\",\"example\":false,\"description\":\"是否能显示remove按钮\"},\"city\":{\"type\":\"string\",\"example\":\"杭州市\",\"description\":\"市\"},\"cityId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":\"杭州市Id\",\"description\":\"市Id\"},\"companyName\":{\"type\":\"string\",\"example\":\"TCC td\",\"description\":\"公司名称\"},\"contact\":{\"type\":\"string\",\"example\":\"TCC 的公司\",\"description\":\"客户的相关描述\"},\"detailAddress\":{\"type\":\"string\",\"example\":\"天和华丰苑\",\"description\":\"详细地址\"},\"district\":{\"type\":\"string\",\"example\":\"余杭区\",\"description\":\"区\"},\"districtAddress\":{\"type\":\"string\",\"example\":\"浙江省-杭州市-余杭区\",\"description\":\"三级结构\"},\"districtId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":\"余杭区Id\",\"description\":\"区Id\"},\"mobile\":{\"type\":\"string\",\"example\":\"1570082377\",\"description\":\"客户手机号\"},\"postCode\":{\"type\":\"string\",\"example\":\"311122\",\"description\":\"邮编\"},\"province\":{\"type\":\"string\",\"example\":\"浙江省\",\"description\":\"省\"},\"provinceId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":\"浙江省Id\",\"description\":\"省Id\"},\"receiveAddressId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":21,\"description\":\"receiveAddressId\"},\"receiveFullAddress\":{\"type\":\"string\",\"example\":\"浙江省-杭州市-余杭区 天和华丰24幢\",\"description\":\"省-市-区\"},\"shipId\":{\"type\":\"string\",\"example\":\"123\",\"description\":\"shipId\"}}},\"更新shipId的参数\":{\"type\":\"object\",\"properties\":{\"cityId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":4,\"description\":\"市Id\"},\"companyName\":{\"type\":\"string\",\"example\":\"名字叫Xxx\",\"description\":\"客户名称\"},\"contact\":{\"type\":\"string\",\"example\":\"人物的描述\",\"description\":\"联系方式\"},\"countryId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":1001,\"description\":\"countryId\"},\"detailAddress\":{\"type\":\"string\",\"example\":\"西湖区天和华丰\",\"description\":\"详细地址\"},\"districtId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":5,\"description\":\"区Id\"},\"id\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":\"主键\",\"description\":\"主键\"},\"langCode\":{\"type\":\"string\",\"example\":\"1001 语言，页面不需要传递的\",\"description\":\"langCode\"},\"lat\":{\"type\":\"number\",\"format\":\"double\",\"example\":21.29612,\"description\":\"纬度\"},\"lng\":{\"type\":\"number\",\"format\":\"double\",\"example\":113.157337,\"description\":\"经度\"},\"mobile\":{\"type\":\"string\",\"example\":\"15700082377\",\"description\":\"手机号码\"},\"postCode\":{\"type\":\"string\",\"example\":\"311122\",\"description\":\"邮编\"},\"prefix\":{\"type\":\"string\",\"example\":\"66\",\"description\":\"手机号码前缀\"},\"provinceId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":22,\"description\":\"省Id\"},\"shipIdPhotoParams\":{\"type\":\"array\",\"description\":\"图片\",\"items\":{\"$ref\":\"#/definitions/图片\"}}}},\"查询参数\":{\"type\":\"object\",\"properties\":{\"cityId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":4,\"description\":\"市Id\"},\"companyName\":{\"type\":\"string\",\"example\":\"CustonmerAA\",\"description\":\"客户名称的模糊查询\"},\"contact\":{\"type\":\"string\",\"example\":\"西湖区\",\"description\":\"contact的模糊查询\"},\"countryId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":1001,\"description\":\"countryId\"},\"districtId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":5,\"description\":\"区Id\"},\"limit\":{\"type\":\"integer\",\"format\":\"int32\",\"description\":\"一页大小限制\"},\"mobile\":{\"type\":\"string\",\"example\":\"66157000\",\"description\":\"mobile的模糊查询\"},\"offset\":{\"type\":\"integer\",\"format\":\"int32\",\"description\":\"起点\"},\"page\":{\"type\":\"integer\",\"format\":\"int32\",\"description\":\"页数\"},\"provinceId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":22,\"description\":\"省Id\"},\"shipId\":{\"type\":\"string\",\"example\":\"111\",\"description\":\"shipId 模糊查询\"},\"sortField\":{\"type\":\"string\"},\"sortOrder\":{\"type\":\"string\"},\"total\":{\"type\":\"integer\",\"format\":\"int32\",\"description\":\"总数\"},\"totalAmount\":{\"type\":\"number\"},\"userId\":{\"type\":\"integer\",\"format\":\"int64\",\"example\":17965,\"description\":\"需要被查询的客户\"}}},\"返回类«List«创建shipId时的预参数»»\":{\"type\":\"object\",\"properties\":{\"cause\":{\"type\":\"array\",\"description\":\"异常原因\",\"items\":{\"type\":\"string\"}},\"code\":{\"type\":\"string\",\"description\":\"code\"},\"data\":{\"type\":\"array\",\"description\":\"返回结果值\",\"items\":{\"$ref\":\"#/definitions/创建shipId时的预参数\"}},\"location\":{\"type\":\"string\"},\"message\":{\"type\":\"string\",\"description\":\"描述\"},\"success\":{\"type\":\"boolean\"}}},\"返回类«Page«客户主档返回列表»»\":{\"type\":\"object\",\"properties\":{\"cause\":{\"type\":\"array\",\"description\":\"异常原因\",\"items\":{\"type\":\"string\"}},\"code\":{\"type\":\"string\",\"description\":\"code\"},\"data\":{\"description\":\"返回结果值\",\"$ref\":\"#/definitions/Page«客户主档返回列表»\"},\"location\":{\"type\":\"string\"},\"message\":{\"type\":\"string\",\"description\":\"描述\"},\"success\":{\"type\":\"boolean\"}}},\"返回类«boolean»\":{\"type\":\"object\",\"properties\":{\"cause\":{\"type\":\"array\",\"description\":\"异常原因\",\"items\":{\"type\":\"string\"}},\"code\":{\"type\":\"string\",\"description\":\"code\"},\"data\":{\"type\":\"boolean\",\"example\":false,\"description\":\"返回结果值\"},\"location\":{\"type\":\"string\"},\"message\":{\"type\":\"string\",\"description\":\"描述\"},\"success\":{\"type\":\"boolean\"}}},\"返回类«shipId详情»\":{\"type\":\"object\",\"properties\":{\"cause\":{\"type\":\"array\",\"description\":\"异常原因\",\"items\":{\"type\":\"string\"}},\"code\":{\"type\":\"string\",\"description\":\"code\"},\"data\":{\"description\":\"返回结果值\",\"$ref\":\"#/definitions/shipId详情\"},\"location\":{\"type\":\"string\"},\"message\":{\"type\":\"string\",\"description\":\"描述\"},\"success\":{\"type\":\"boolean\"}}},\"返回类«客户主档返回列表»\":{\"type\":\"object\",\"properties\":{\"cause\":{\"type\":\"array\",\"description\":\"异常原因\",\"items\":{\"type\":\"string\"}},\"code\":{\"type\":\"string\",\"description\":\"code\"},\"data\":{\"description\":\"返回结果值\",\"$ref\":\"#/definitions/客户主档返回列表\"},\"location\":{\"type\":\"string\"},\"message\":{\"type\":\"string\",\"description\":\"描述\"},\"success\":{\"type\":\"boolean\"}}}}}";
 
+    /**
+     * 中间数据
+     */
+    private Map<String, SwaggerApiListDto> swaggerApiListDtoMap = new HashMap<>();
+    private Map<String, List<ResultData>> definitionVoMap = new HashMap<>();
+
     @Override
     public OpenApi getOriginSwaggerData(String url) throws BizException {
         //获取json化数据
@@ -61,6 +67,9 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 
     @Override
     public List<SwaggerApiListVo> getSwaggerData(SwaggerApiListParam swaggerApiListParam) throws BizException {
+        swaggerApiListDtoMap.clear();
+        definitionVoMap.clear();
+
         //获取所有列表
         List<SwaggerApiListDto> swaggerApiListDtoList = this.queryAllList();
 
@@ -76,20 +85,64 @@ public class ApiResponseServiceImpl implements ApiResponseService {
     }
 
     /**
+     * 查询定义的结构
+     *
+     * @param openApi
+     * @return
+     */
+    private Map<String, List<ResultData>> queryDefinitionMap(OpenApi openApi) {
+        //解析定义的类
+        Map<String, List<ResultData>> definitionMap = new HashMap<>();
+        LinkedHashMap<String, ReturnResult> resultLinkedHashMap = openApi.getDefinitions();
+        for (Map.Entry<String, ReturnResult> entry : resultLinkedHashMap.entrySet()) {
+            String returnKey = entry.getKey();
+            ReturnResult returnResult = entry.getValue();
+            if (CommonUtil.isEmpty(returnKey) || CommonUtil.isEmpty(returnResult)) {
+                continue;
+            }
+            String type = returnResult.getType();
+            Map<String, ReturnProperty> propertyMap = returnResult.getProperties();
+            List<ResultData> resultDataList = new ArrayList<>();
+            if (Objects.equals(type, "object")) {
+                if (CommonUtil.isNotEmpty(propertyMap)) {
+                    for (Map.Entry<String, ReturnProperty> propertyEntry : propertyMap.entrySet()) {
+                        String returnName = propertyEntry.getKey();
+                        ReturnProperty returnProperty = propertyEntry.getValue();
+                        String returnType = returnProperty.getType();
+                        String description = returnProperty.getDescription();
+                        String example = returnProperty.getExample();
+                        String ref = "";
+                        Map<String, String> items = returnProperty.getItems();
+                        if (CommonUtil.isNotEmpty(items)) {
+                            ref = items.get("ref");
+                        }
+                        ResultData resultData = new ResultData();
+                        resultData.setName(returnName);
+                        resultData.setDescription(description);
+                        resultData.setExample(example);
+                        resultData.setType(returnType);
+                        resultData.setRef(ref);
+                        resultDataList.add(resultData);
+                    }
+                }
+            } else {
+                //TODO 其他情况之后再加
+            }
+            definitionMap.put(returnKey, resultDataList);
+        }
+        return definitionMap;
+    }
+
+    /**
      * 查询现在系统里面存在的所有记录
      */
     private List<SwaggerApiListDto> queryAllList() {
         OpenApi openApi = this.getOriginSwaggerData(null);
 
-
         //转换成列表
         if (CommonUtil.isEmpty(openApi)) {
             return new ArrayList<>();
         }
-        //解析参数
-        LinkedHashMap<String, ReturnResult> resultLinkedHashMap = openApi.getDefinitions();
-
-
         //详情请求
         LinkedHashMap<String, PathItem> map = openApi.getPaths();
         if (CommonUtil.isEmpty(map)) {
@@ -112,9 +165,42 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         if (CommonUtil.isEmpty(swaggerApiListDtoList)) {
             return new ArrayList<>();
         }
+
+        //load to local cache
+        this.loadApiToLocalCache(swaggerApiListDtoList);
+        this.loadDefinitionListToLocalCache(this.queryDefinitionMap(openApi));
         return swaggerApiListDtoList;
     }
 
+    private void loadDefinitionListToLocalCache(Map<String, List<ResultData>> resultMap) {
+        if (CommonUtil.isEmpty(resultMap)) {
+            return;
+        }
+        definitionVoMap = resultMap;
+    }
+
+    /**
+     * 将整理出来的接口 缓存到本地
+     *
+     * @param swaggerApiList
+     */
+    private void loadApiToLocalCache(List<SwaggerApiListDto> swaggerApiList) {
+        if (CommonUtil.isEmpty(swaggerApiList)) {
+            return;
+        }
+        swaggerApiList.stream().forEach(x -> {
+            String key = x.getKey();
+            swaggerApiListDtoMap.put(key, x);
+        });
+    }
+
+    /**
+     * 列表筛选
+     *
+     * @param listVo
+     * @param swaggerApiListParam
+     * @return
+     */
     public Boolean filter(SwaggerApiListVo listVo, SwaggerApiListParam swaggerApiListParam) {
         if (CommonUtil.isEmpty(listVo) || CommonUtil.isEmpty(swaggerApiListParam)) {
             return true;
@@ -138,7 +224,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         if (CommonUtil.isNotEmpty(key) && !Objects.equals(listVo.getKey(), key)) {
             return false;
         }
-        if (CommonUtil.isNotEmpty(url) && !Objects.equals(listVo.getUrl(), url)) {
+        if (CommonUtil.isNotEmpty(url) && !listVo.getUrl().contains(url)) {
             return false;
         }
         if (CommonUtil.isNotEmpty(method) && !Objects.equals(listVo.getMethod(), method)) {
@@ -151,12 +237,58 @@ public class ApiResponseServiceImpl implements ApiResponseService {
     }
 
     @Override
-    public SwaggerApiListVo getSwaggerVo(String key) {
-        List<SwaggerApiListDto> list = this.queryAllList();
+    public SwaggerApiDetailVo getSwaggerVo(String key) {
+        if (CommonUtil.isEmpty(key)) {
+            throw new BizException("can not found this interface");
+        }
+        SwaggerApiListDto swaggerApiListDto = swaggerApiListDtoMap.get(key);
+        if (CommonUtil.isEmpty(swaggerApiListDto)) {
+            throw new BizException("can not found this interface");
+        }
+        SwaggerApiDetailVo swaggerApiDetailVo = new SwaggerApiDetailVo();
+        swaggerApiDetailVo.setDescription(swaggerApiListDto.getDescription());
+        swaggerApiDetailVo.setKey(swaggerApiListDto.getKey());
+        swaggerApiDetailVo.setMethod(swaggerApiListDto.getMethod());
+        swaggerApiDetailVo.setTags(swaggerApiListDto.getTags());
+        swaggerApiDetailVo.setUrl(swaggerApiListDto.getUrl());
+        List<Parameter> parameterList = swaggerApiListDto.getParameters();
+        if (CommonUtil.isNotEmpty(parameterList)) {
+            List<RequestParamVo> requestParamVos = parameterList.stream().map(x -> {
+                RequestParamVo requestParamVo = new RequestParamVo();
+                requestParamVo.setName(x.getName());
+                requestParamVo.setDefaultValue(x.getDefaultValue());
+                requestParamVo.setDescription(x.getDescription());
+                requestParamVo.setIn(x.getIn());
+                requestParamVo.setRef(x.getRef());
+                requestParamVo.setRequired(x.getRequired());
+                requestParamVo.setType(x.getType());
+                return requestParamVo;
+            }).collect(Collectors.toList());
+            swaggerApiDetailVo.setRequestParamVos(requestParamVos);
+        }
+        //返回结果集 需要自动解析掉 。最外面那一层不要
+        ResultData resultData = swaggerApiListDto.getResultData();
+        String ref = resultData.getRef();
+        if (CommonUtil.isNotEmpty(ref)) {
+            //FIXME 这里直接返回最底层的返回值结构。
+            List<ResultData> relDataList = definitionVoMap.get(ref);
+            List<RequestResultVo> requestResultVos = new ArrayList<>();
+            for (ResultData sample : relDataList) {
 
-        return getSwaggerData(null).stream().filter(x -> {
-            return Objects.equals(x.getKey(), key);
-        }).findFirst().orElse(null);
+                RequestResultVo requestResultVo = CommonUtil.copyProperties(sample, RequestResultVo.class);
+                requestResultVos.add(requestResultVo);
+            }
+            swaggerApiDetailVo.setRequestResultVos(requestResultVos);
+        }
+        return swaggerApiDetailVo;
+    }
+
+    @Override
+    public DefinitionVo getDefinitionVo(String definitionKey) {
+        List<ResultData> resultData = definitionVoMap.get(definitionKey);
+        DefinitionVo definitionVo = new DefinitionVo();
+        definitionVo.setResultDataList(resultData);
+        return definitionVo;
     }
 
     public static SwaggerApiListVo convert2Vo(SwaggerApiListDto dto) {
@@ -195,7 +327,6 @@ public class ApiResponseServiceImpl implements ApiResponseService {
                 if (CommonUtil.isEmpty(apiListDto)) {
                     continue;
                 }
-                System.out.println(JSON.toJSONString(apiListDto));
                 apiListDtoList.add(apiListDto);
             }
         }
@@ -225,8 +356,42 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         swaggerApiListDto.setUrl(url);
         swaggerApiListDto.setDescription(operation.getSummary());
         swaggerApiListDto.setTags(operation.getTags());
-        swaggerApiListDto.setParameters(operation.getParameters());
-        swaggerApiListDto.setKey(swaggerApiListDto.getMethod().name() + SEP + swaggerApiListDto.getUrl());
+        List<Parameter> parameters = operation.getParameters();
+        if (CommonUtil.isNotEmpty(parameters)) {
+            parameters.stream().forEach(x -> {
+                Map<String, String> map = x.getSchema();
+                if (CommonUtil.isNotEmpty(map)) {
+                    x.setRef(map.get("ref"));
+                }
+            });
+        }
+        swaggerApiListDto.setParameters(parameters);
+        String keyStr = swaggerApiListDto.getMethod().name() + SEP + swaggerApiListDto.getUrl();
+        swaggerApiListDto.setKey(CommonUtil.md5s(keyStr));
+        LinkedHashMap<String, ApiResponse> map = operation.getResponses();
+        if (CommonUtil.isNotEmpty(map)) {
+            for (Map.Entry<String, ApiResponse> entry : map.entrySet()) {
+                String code = entry.getKey();
+                if (CommonUtil.isEmpty(code) || !Objects.equals(code, "200")) {
+                    //只需要正常返回的结果
+                    continue;
+                }
+                ApiResponse apiResponse = entry.getValue();
+//                ApiResponse apiResponse = JSON.toJavaObject(entry.getValue(), ApiResponse.class);;
+                if (CommonUtil.isNotEmpty(apiResponse)) {
+                    String description = apiResponse.getDescription();
+                    String ref = "";
+                    Map<String, String> schema = apiResponse.getSchema();
+                    if (CommonUtil.isNotEmpty(schema)) {
+                        ref = schema.get("ref");
+                    }
+                    ResultData resultData = new ResultData();
+                    resultData.setRef(ref);
+                    resultData.setDescription(description);
+                    swaggerApiListDto.setResultData(resultData);
+                }
+            }
+        }
         return swaggerApiListDto;
     }
 
@@ -244,8 +409,8 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         if (CommonUtil.isEmpty(data)) {
             throw new RuntimeException("data empty.");
         }
-        data=data.replaceAll("\\$ref","ref");
-        data=data.replaceAll("#/definitions","");
+        data = data.replaceAll("\\$ref", "ref");
+        data = data.replaceAll("#/definitions/", "");
         JSONObject userJson = JSONObject.parseObject(data);
         OpenApi openApi = JSON.toJavaObject(userJson, OpenApi.class);
         return openApi;

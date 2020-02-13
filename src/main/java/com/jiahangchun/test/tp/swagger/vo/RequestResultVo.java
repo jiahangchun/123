@@ -1,9 +1,9 @@
-package com.jiahangchun.test.tp.swagger.dto;
+package com.jiahangchun.test.tp.swagger.vo;
 
 import lombok.Data;
 
 @Data
-public class ResultData {
+public class RequestResultVo {
 
     private String name;
 
@@ -11,14 +11,11 @@ public class ResultData {
 
     private String type;
 
-    //上面三个有点奇怪
-
-    private Integer code;
-
     private String description;
 
     /**
      * 可能是其他的引用
      */
     private String ref;
+
 }

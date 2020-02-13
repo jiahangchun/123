@@ -3,6 +3,8 @@ package com.jiahangchun.test.tp.swagger;
 import com.jiahangchun.test.tp.common.BizException;
 import com.jiahangchun.test.tp.swagger.dto.OpenApi;
 import com.jiahangchun.test.tp.swagger.parm.SwaggerApiListParam;
+import com.jiahangchun.test.tp.swagger.vo.DefinitionVo;
+import com.jiahangchun.test.tp.swagger.vo.SwaggerApiDetailVo;
 import com.jiahangchun.test.tp.swagger.vo.SwaggerApiListVo;
 
 import java.util.List;
@@ -32,5 +34,14 @@ public interface ApiResponseService {
      * @param key
      * @return
      */
-    public SwaggerApiListVo getSwaggerVo(String key);
+    public SwaggerApiDetailVo getSwaggerVo(String key);
+
+    /**
+     * 获取某个定义的类
+     *
+     * @param definitionKey
+     * @return
+     */
+    public DefinitionVo getDefinitionVo(String definitionKey);
+
 }

@@ -1,15 +1,16 @@
 package com.jiahangchun.test.tp.common;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpMethod;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author jiahangchun
@@ -125,5 +126,39 @@ public class CommonUtil {
 
     public static void copyProperties(Object fromObj, Object toObj) throws RuntimeException {
         BeanUtils.copyProperties(fromObj, toObj);
+    }
+
+
+    /**
+     * 依据string 转换成32位md5做key.
+     *
+     * @param plainText
+     * @return
+     */
+    public static String md5s(String plainText) {
+        String md5 = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(plainText.getBytes());
+            byte b[] = md.digest();
+
+            int i;
+
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    buf.append("0");
+                buf.append(Integer.toHexString(i));
+            }
+            md5 = buf.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        }
+        return md5;
     }
 }

@@ -14,11 +14,14 @@ public class OpenApi {
 
     private String host;
 
+    /**
+     * 前缀
+     */
     private String basePath;
 
     private List<Tag> tags = null;
 
-    private LinkedHashMap<String, PathItem>  paths;
+    private LinkedHashMap<String, PathItem> paths;
 
     private LinkedHashMap<String, ReturnResult> definitions;
 }
