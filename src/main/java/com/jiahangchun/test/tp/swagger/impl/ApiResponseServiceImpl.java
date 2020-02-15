@@ -12,6 +12,7 @@ import com.jiahangchun.test.tp.swagger.parm.SwaggerApiListParam;
 import com.jiahangchun.test.tp.swagger.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Maps;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpMethod;
@@ -283,10 +284,13 @@ public class ApiResponseServiceImpl implements ApiResponseService {
                         //TODO 类型 想要一个默认值
                         switch (type) {
                             case "string":
-                                requestParamVo.setDescription("");
+                                requestParamVo.setDefaultValue("");
                                 break;
                             case "number":
-                                requestParamVo.setDescription("0");
+                                requestParamVo.setDefaultValue("0");
+                                break;
+                            case "integer":
+                                requestParamVo.setDefaultValue("17965");
                                 break;
                             default:
                                 break;
@@ -363,8 +367,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
             return new MockRequestVo();
         }
         String url = "http://" + swaggerApiDetailVo.getHost() + swaggerApiDetailVo.getUrl();
-        Map<String, Object> headers = new HashMap<>();
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> headers = new HashMap<>(), params = new HashMap<>(), paths = new HashMap<>();
         List<RequestParamVo> parameters = swaggerApiDetailVo.getRequestParamVos();
         if (CommonUtil.isNotEmpty(parameters)) {
             for (RequestParamVo parameter : parameters) {
@@ -375,7 +378,22 @@ public class ApiResponseServiceImpl implements ApiResponseService {
                     params.put(name, defaultValue);
                 } else if (Objects.equals(in, "header")) {
                     headers.put(name, defaultValue);
+                } else if (Objects.equals(in, "path")) {
+                    paths.put(name, defaultValue);
                 }
+            }
+        }
+
+        //针对 PathVariable 需要特殊处理下
+        if (CommonUtil.isNotEmpty(paths)) {
+            for (Map.Entry<String, Object> entry : paths.entrySet()) {
+                String key = entry.getKey();
+                Object val = entry.getValue();
+                if (CommonUtil.isEmpty(key) || CommonUtil.isEmpty(val)) {
+                    continue;
+                }
+                String value = String.valueOf(val);
+                url = url.replaceAll("\\{" + key + "}", value);
             }
         }
         String requestResult = "";
