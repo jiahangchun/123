@@ -1,21 +1,44 @@
 package com.jiahangchun.test.tp.common;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.BeanUtil;
+import okhttp3.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpMethod;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author jiahangchun
  */
 public class CommonUtil {
+
+    private static final String ACCEPT_HEADER_VALUE = "application/json, application/yaml, */*";
+    private static final String USER_AGENT_HEADER_VALUE = "Apache-HttpClient/Swagger";
+    private static final Charset UTF_8 = StandardCharsets.UTF_8;
+    public static Map<String, String> HTTP_REQUEST_HEADERS = new HashMap<>();
+    private static OkHttpClient okHttpClient = null;
+
+    static {
+        okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.SECONDS).build();
+        HTTP_REQUEST_HEADERS.put("Accept", ACCEPT_HEADER_VALUE);
+        HTTP_REQUEST_HEADERS.put("User-Agent", USER_AGENT_HEADER_VALUE);
+        System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
+        System.setProperty("sun.net.client.defaultReadTimeout", "30000");
+    }
 
     private CommonUtil() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -129,6 +152,8 @@ public class CommonUtil {
     }
 
 
+    /*********************************** md5 *************************************************/
+
     /**
      * 依据string 转换成32位md5做key.
      *
@@ -161,4 +186,104 @@ public class CommonUtil {
         }
         return md5;
     }
+
+    /*********************************** 正则表达式 *************************************************/
+    /**
+     * 找到最先匹配到的结果
+     *
+     * @param line
+     * @param pattern
+     * @return
+     */
+    public static String match(String line, String pattern) {
+        String result = "";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(line);
+        if (m.find()) {
+            result = m.group(0);
+        }
+        return result;
+    }
+
+
+    /*********************************** http请求 *************************************************/
+
+
+    public static String urlToString(String url) throws Exception {
+        return CommonUtil.urlToString(url, HTTP_REQUEST_HEADERS, null);
+    }
+
+    /**
+     * TODO
+     * 还需要携带认证信息
+     * ConnectionConfigurator SSL 认证
+     *
+     * @param url
+     * @return
+     * @throws Exception
+     */
+    public static String urlToString(String url, Map<String, String> headers, Map<String, Object> params) throws Exception {
+
+        InputStream is = null;
+        BufferedReader br = null;
+        try {
+            URLConnection conn;
+            do {
+                final URL inUrl = new URL(cleanUrl(url));
+                conn = inUrl.openConnection();
+                if (CommonUtil.isNotEmpty(headers)) {
+                    for (Map.Entry<String, String> entry : headers.entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+                        if (CommonUtil.isNotEmpty(key) && CommonUtil.isNotEmpty(value)) {
+                            conn.setRequestProperty(key, value);
+                        }
+                    }
+                }
+                conn.connect();
+                url = ((HttpURLConnection) conn).getHeaderField("Location");
+            } while (301 == ((HttpURLConnection) conn).getResponseCode());
+            InputStream in = conn.getInputStream();
+            StringBuilder contents = new StringBuilder();
+            BufferedReader input = new BufferedReader(new InputStreamReader(in, UTF_8));
+            for (int i = 0; i != -1; i = input.read()) {
+                char c = (char) i;
+                if (!Character.isISOControl(c)) {
+                    contents.append((char) i);
+                }
+                if (c == '\n') {
+                    contents.append('\n');
+                }
+            }
+            in.close();
+            return contents.toString();
+        } catch (javax.net.ssl.SSLProtocolException e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+            if (br != null) {
+                br.close();
+            }
+        }
+    }
+
+
+    public static String cleanUrl(String url) {
+        String result = null;
+        try {
+            result = url.replaceAll("\\{", "%7B").
+                    replaceAll("\\}", "%7D").
+                    replaceAll(" ", "%20");
+        } catch (Exception t) {
+            t.printStackTrace();
+        }
+        return result;
+    }
+
+
+
 }

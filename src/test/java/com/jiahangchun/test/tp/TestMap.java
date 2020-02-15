@@ -9,3 +9,4 @@ public class TestMap {
 
     Map<String,String> sechem;
 }
+

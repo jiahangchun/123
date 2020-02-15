@@ -29,6 +29,11 @@ public class SwaggerApiListDto {
     private String url;
 
     /**
+     * 请求地址
+     */
+    private String host;
+
+    /**
      * 请求方法
      */
     private HttpMethod method;

@@ -1,12 +1,11 @@
 package com.jiahangchun.test.tp.swagger.vo;
 
 import lombok.Data;
-import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
 @Data
-public class SwaggerApiDetailVo {
+public class MockRequestVo {
 
     /**
      * 所属的模块
@@ -29,14 +28,9 @@ public class SwaggerApiDetailVo {
     private String url;
 
     /**
-     * 请求地址
-     */
-    private String host;
-
-    /**
      * 请求方法
      */
-    private HttpMethod method;
+    private String method;
 
     /**
      * 接口简述
@@ -44,13 +38,12 @@ public class SwaggerApiDetailVo {
     private String description;
 
     /**
-     * 请求参数
+     * mockRequest 请求结果 JSON
      */
-    private List<RequestParamVo> requestParamVos;
+    private String mockRequestResult;
 
     /**
-     * 返回结果参数
+     * mockRequest 请求 JSON
      */
-    private List<RequestResultVo> requestResultVos;
-
+    private String mockRequest;
 }

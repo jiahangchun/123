@@ -2,8 +2,10 @@ package com.jiahangchun.test.tp.swagger;
 
 import com.jiahangchun.test.tp.common.BizException;
 import com.jiahangchun.test.tp.swagger.dto.OpenApi;
+import com.jiahangchun.test.tp.swagger.dto.SwaggerApiListDto;
 import com.jiahangchun.test.tp.swagger.parm.SwaggerApiListParam;
 import com.jiahangchun.test.tp.swagger.vo.DefinitionVo;
+import com.jiahangchun.test.tp.swagger.vo.MockRequestVo;
 import com.jiahangchun.test.tp.swagger.vo.SwaggerApiDetailVo;
 import com.jiahangchun.test.tp.swagger.vo.SwaggerApiListVo;
 
@@ -14,10 +16,9 @@ public interface ApiResponseService {
     /**
      * 获取原本的swagger数据
      *
-     * @param url
      * @return
      */
-    public OpenApi getOriginSwaggerData(String url) throws BizException;
+    public OpenApi getOriginSwaggerData() throws BizException;
 
     /**
      * 返回给页面的数据
@@ -43,5 +44,13 @@ public interface ApiResponseService {
      * @return
      */
     public DefinitionVo getDefinitionVo(String definitionKey);
+
+    /**
+     * 请求
+     *
+     * @param swaggerApiDetailVo
+     * @return
+     */
+    public MockRequestVo mockRequest(SwaggerApiDetailVo swaggerApiDetailVo);
 
 }

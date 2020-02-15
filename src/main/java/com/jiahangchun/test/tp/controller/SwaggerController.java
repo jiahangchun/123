@@ -2,8 +2,10 @@ package com.jiahangchun.test.tp.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jiahangchun.test.tp.swagger.ApiResponseService;
+import com.jiahangchun.test.tp.swagger.dto.SwaggerApiListDto;
 import com.jiahangchun.test.tp.swagger.parm.SwaggerApiListParam;
 import com.jiahangchun.test.tp.swagger.vo.DefinitionVo;
+import com.jiahangchun.test.tp.swagger.vo.MockRequestVo;
 import com.jiahangchun.test.tp.swagger.vo.SwaggerApiDetailVo;
 import com.jiahangchun.test.tp.swagger.vo.SwaggerApiListVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class SwaggerController {
      */
     @GetMapping("/seek/origin/data")
     public String seekOriginData() {
-        return JSON.toJSONString(apiResponseService.getOriginSwaggerData(null));
+        return JSON.toJSONString(apiResponseService.getOriginSwaggerData());
     }
 
     /**
@@ -60,6 +62,18 @@ public class SwaggerController {
     @GetMapping("/get/definition/dto")
     public DefinitionVo getDefinition(@RequestParam("key") String key) {
         return apiResponseService.getDefinitionVo(key);
+    }
+
+
+    /**
+     * 请求
+     *
+     * @param swaggerApiDetailVo
+     * @return
+     */
+    @PostMapping("/mock/request")
+    public MockRequestVo mockRequest(@RequestBody SwaggerApiDetailVo swaggerApiDetailVo) {
+        return apiResponseService.mockRequest(swaggerApiDetailVo);
     }
 
 
