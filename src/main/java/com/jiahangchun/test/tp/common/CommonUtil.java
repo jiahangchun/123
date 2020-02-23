@@ -1,7 +1,10 @@
 package com.jiahangchun.test.tp.common;
 
+import com.alibaba.fastjson.JSON;
+import net.sf.cglib.beans.BeanGenerator;
 import okhttp3.*;
 import org.springframework.beans.BeanUtils;
+//import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.http.HttpMethod;
 
 import java.io.BufferedReader;
@@ -284,6 +287,63 @@ public class CommonUtil {
         return result;
     }
 
+
+    /*********************************** 反射相关的操作 *************************************************/
+
+    /**
+     * 根据属性动态生成对象，并赋值
+     * <p>
+     * 注意：返回生成的对象属性，均在设置属性前加入前缀$cglib_prop_，例如$cglib_prop_userId
+     *
+     * @param propertyMap Map<生成的对象变量名称，生成的对象变量值>
+     * @return Object
+     */
+    private static Object generateObjectByField(Map<String, Object> propertyMap) throws Exception {
+        BeanGenerator generator = new BeanGenerator();
+        for (Map.Entry<String, Object> entry : propertyMap.entrySet()) {
+            generator.addProperty(entry.getKey(), entry.getValue().getClass());
+        }
+        // 构建对象
+        Object obj = generator.create();
+        // 赋值
+        for (Map.Entry<String, Object> en : propertyMap.entrySet()) {
+            org.apache.commons.beanutils.BeanUtils.setProperty(obj, en.getKey(), en.getValue());
+        }
+        return obj;
+    }
+
+    public static String generateObjectByFieldToStr(Map<String, Object> propertyMap) {
+        try {
+            Object object = CommonUtil.generateObjectByField(propertyMap);
+            return JSON.toJSONString(object).replaceAll("$cglib_prop_", "");
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    /**
+     * 获取常用的类的默认返回值
+     * @param type
+     * @return
+     */
+    public static String getDefaultValue(String type){
+        switch( type) {
+            case "string":
+                return "string";
+            case "integer":
+                return "1001";
+            case "number":
+                return "1";
+            case "boolean":
+                return "true";
+            case "array":
+                return "[]";
+            case "object":
+                return "{}";
+            default:
+                return type;
+        }
+    }
 
 
 }

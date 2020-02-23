@@ -1370,5 +1370,37 @@
     <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.18" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-configuration2:2.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.8" level="project" />
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.asciidoctor:asciidoctorj:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.asciidoctor:asciidoctorj-api:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby:jruby:9.2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby:jruby-core:9.2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jnr:jnr-netdb:1.1.6" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jnr:jnr-enxio:0.23" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jnr:jnr-unixsocket:0.24" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jnr:jnr-posix:3.0.51" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jnr:jnr-constants:0.9.14" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jnr:jffi:1.2.22" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jnr:jffi:native:1.2.22" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby.joni:joni:2.1.30" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby.jcodings:jcodings:1.0.45" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby:dirgra:0.3" level="project" />
+    <orderEntry type="library" name="Maven: com.headius:invokebinder:1.11" level="project" />
+    <orderEntry type="library" name="Maven: com.headius:options:1.4" level="project" />
+    <orderEntry type="library" name="Maven: com.jcraft:jzlib:1.1.3" level="project" />
+    <orderEntry type="library" name="Maven: com.martiansoftware:nailgun-server:0.9.1" level="project" />
+    <orderEntry type="library" name="Maven: joda-time:joda-time:2.10.5" level="project" />
+    <orderEntry type="library" name="Maven: com.headius:backport9:1.3" level="project" />
+    <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby:jruby-stdlib:9.2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.beust:jcommander:1.72" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
+    <orderEntry type="library" name="Maven: io.vavr:vavr:0.10.2" level="project" />
+    <orderEntry type="library" name="Maven: io.vavr:vavr-match:0.10.2" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:3.2.4" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.3" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
   </component>
 </module>

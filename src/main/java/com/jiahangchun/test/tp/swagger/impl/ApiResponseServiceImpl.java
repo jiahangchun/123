@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.jiahangchun.test.tp.common.BizException;
 import com.jiahangchun.test.tp.common.CommonUtil;
 import com.jiahangchun.test.tp.common.OkHttpRequestUtils;
+import com.jiahangchun.test.tp.convert.data.format.SwaggerDataFormat;
 import com.jiahangchun.test.tp.swagger.ApiResponseService;
 import com.jiahangchun.test.tp.swagger.dto.*;
 import com.jiahangchun.test.tp.swagger.parm.SwaggerApiListParam;
@@ -13,7 +14,9 @@ import com.jiahangchun.test.tp.swagger.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.util.Lists;
 import org.assertj.core.util.Maps;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -43,7 +46,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
     /**
      * 默认的swagger地址
      */
-    private static final String SEP = "###";
+
     public static String CURRENT_URL = null;
     private static final String CONVENIENT_TEST_SWAGGER_URL = "http://erp.test.jimuitech.com//platform/v2/api-docs";
     private static final String CONVENIENT_LOCAL_SWAGGER_URL = "http://localhost:8080//platform/v2/api-docs";
@@ -65,7 +68,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         String url = CURRENT_URL;
         data = ApiResponseServiceImpl.data(url);
         //格式化
-        return ApiResponseServiceImpl.transform2Obj(data);
+        return SwaggerDataFormat.transform2Obj(data);
     }
 
     @Override
@@ -86,54 +89,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         return swaggerApiListVos;
     }
 
-    /**
-     * 查询定义的结构
-     *
-     * @param openApi
-     * @return
-     */
-    private Map<String, List<ResultData>> queryDefinitionMap(OpenApi openApi) {
-        //解析定义的类
-        Map<String, List<ResultData>> definitionMap = new HashMap<>();
-        LinkedHashMap<String, ReturnResult> resultLinkedHashMap = openApi.getDefinitions();
-        for (Map.Entry<String, ReturnResult> entry : resultLinkedHashMap.entrySet()) {
-            String returnKey = entry.getKey();
-            ReturnResult returnResult = entry.getValue();
-            if (CommonUtil.isEmpty(returnKey) || CommonUtil.isEmpty(returnResult)) {
-                continue;
-            }
-            String type = returnResult.getType();
-            Map<String, ReturnProperty> propertyMap = returnResult.getProperties();
-            List<ResultData> resultDataList = new ArrayList<>();
-            if (Objects.equals(type, "object")) {
-                if (CommonUtil.isNotEmpty(propertyMap)) {
-                    for (Map.Entry<String, ReturnProperty> propertyEntry : propertyMap.entrySet()) {
-                        String returnName = propertyEntry.getKey();
-                        ReturnProperty returnProperty = propertyEntry.getValue();
-                        String returnType = returnProperty.getType();
-                        String description = returnProperty.getDescription();
-                        String example = returnProperty.getExample();
-                        String ref = "";
-                        Map<String, String> items = returnProperty.getItems();
-                        if (CommonUtil.isNotEmpty(items)) {
-                            ref = items.get("ref");
-                        }
-                        ResultData resultData = new ResultData();
-                        resultData.setName(returnName);
-                        resultData.setDescription(description);
-                        resultData.setExample(example);
-                        resultData.setType(returnType);
-                        resultData.setRef(ref);
-                        resultDataList.add(resultData);
-                    }
-                }
-            } else {
-                //TODO 其他情况之后再加
-            }
-            definitionMap.put(returnKey, resultDataList);
-        }
-        return definitionMap;
-    }
+
 
     /**
      * 查询现在系统里面存在的所有记录
@@ -141,46 +97,15 @@ public class ApiResponseServiceImpl implements ApiResponseService {
     private List<SwaggerApiListDto> queryAllList() {
         swaggerApiListDtoMap.clear();
         definitionVoMap.clear();
-
         OpenApi openApi = this.getOriginSwaggerData();
-        String host = openApi.getHost();
-        String platform = openApi.getBasePath();
-
-        //转换成列表
-        if (CommonUtil.isEmpty(openApi)) {
-            return new ArrayList<>();
-        }
         //详情请求
-        LinkedHashMap<String, PathItem> map = openApi.getPaths();
-        if (CommonUtil.isEmpty(map)) {
-            return new ArrayList<>();
-        }
-        List<SwaggerApiListDto> swaggerApiListDtoList = new ArrayList<>(map.size());
-        for (Map.Entry<String, PathItem> entry : map.entrySet()) {
-            String url = entry.getKey();
-            PathItem pathItem = entry.getValue();
-            if (CommonUtil.isEmpty(pathItem)) {
-                continue;
-            }
-            try {
-                List<SwaggerApiListDto> swaggerApiListDto = formApiInfo(pathItem, url);
-                swaggerApiListDtoList.addAll(swaggerApiListDto);
-            } catch (Exception e) {
-                log.error("can not gen apiList for {}", e.getMessage(), e);
-            }
-        }
+        List<SwaggerApiListDto> swaggerApiListDtoList = SwaggerDataFormat.getSwaggerApiListDtos(openApi);
         if (CommonUtil.isEmpty(swaggerApiListDtoList)) {
             return new ArrayList<>();
         }
-        //添加基本信息
-        swaggerApiListDtoList.stream().forEach(x -> {
-            x.setUrl(platform + x.getUrl());
-            x.setHost(host);
-        });
-
         //load to local cache
         this.loadApiToLocalCache(swaggerApiListDtoList);
-        this.loadDefinitionListToLocalCache(this.queryDefinitionMap(openApi));
+        this.loadDefinitionListToLocalCache(SwaggerDataFormat.queryDefinitionMap(openApi));
         return swaggerApiListDtoList;
     }
 
@@ -437,120 +362,13 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         return swaggerApiListVo;
     }
 
-    public List<SwaggerApiListDto> formApiInfo(PathItem pathItem, String url) throws Exception {
-        if (CommonUtil.isEmpty(pathItem)) {
-            return new ArrayList<>();
-        }
-        List<SwaggerApiListDto> apiListDtoList = new ArrayList<>();
-        Field[] fields = pathItem.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            String fieldName = field.getName();
-            if (Objects.equals(Operation.class.getTypeName(),
-                    field.getGenericType().getTypeName())) {
-                field.setAccessible(true);
-                String methodName = field.getName();
-                Method m = (Method) pathItem.getClass().getMethod(
-                        "get" + getMethodName(field.getName()));
-                Operation operation = (Operation) m.invoke(pathItem);
-                if (CommonUtil.isEmpty(operation) || CommonUtil.isEmpty(methodName)) {
-                    continue;
-                }
-                HttpMethod method = CommonUtil.getMethodByName(methodName);
-                if (CommonUtil.isEmpty(method)) {
-                    continue;
-                }
-                SwaggerApiListDto apiListDto = this.resolvingPathItem(operation, url, method);
-                if (CommonUtil.isEmpty(apiListDto)) {
-                    continue;
-                }
-                apiListDtoList.add(apiListDto);
-            }
-        }
-        return apiListDtoList;
-    }
-
-    /**
-     * 格式
-     *
-     * @param fieldName
-     * @return
-     * @throws Exception
-     */
-    private static String getMethodName(String fieldName) throws Exception {
-        byte[] items = fieldName.getBytes();
-        items[0] = (byte) ((char) items[0] - 'a' + 'A');
-        return new String(items);
-    }
 
 
-    public SwaggerApiListDto resolvingPathItem(Operation operation, String url, HttpMethod httpMethod) {
-        if (CommonUtil.isEmpty(operation) || CommonUtil.isEmpty(url) || CommonUtil.isEmpty(httpMethod)) {
-            return null;
-        }
-        SwaggerApiListDto swaggerApiListDto = new SwaggerApiListDto();
-        swaggerApiListDto.setMethod(httpMethod);
-        swaggerApiListDto.setUrl(url);
-        swaggerApiListDto.setDescription(operation.getSummary());
-        swaggerApiListDto.setTags(operation.getTags());
-        List<Parameter> parameters = operation.getParameters();
-        if (CommonUtil.isNotEmpty(parameters)) {
-            parameters.stream().forEach(x -> {
-                Map<String, String> map = x.getSchema();
-                if (CommonUtil.isNotEmpty(map)) {
-                    x.setRef(map.get("ref"));
-                }
-            });
-        }
-        swaggerApiListDto.setParameters(parameters);
-        String keyStr = swaggerApiListDto.getMethod().name() + SEP + swaggerApiListDto.getUrl();
-        swaggerApiListDto.setKey(CommonUtil.md5s(keyStr));
-        LinkedHashMap<String, ApiResponse> map = operation.getResponses();
-        if (CommonUtil.isNotEmpty(map)) {
-            for (Map.Entry<String, ApiResponse> entry : map.entrySet()) {
-                String code = entry.getKey();
-                if (CommonUtil.isEmpty(code) || !Objects.equals(code, "200")) {
-                    //只需要正常返回的结果
-                    continue;
-                }
-                ApiResponse apiResponse = entry.getValue();
-//                ApiResponse apiResponse = JSON.toJavaObject(entry.getValue(), ApiResponse.class);;
-                if (CommonUtil.isNotEmpty(apiResponse)) {
-                    String description = apiResponse.getDescription();
-                    String ref = "";
-                    Map<String, String> schema = apiResponse.getSchema();
-                    if (CommonUtil.isNotEmpty(schema)) {
-                        ref = schema.get("ref");
-                    }
-                    ResultData resultData = new ResultData();
-                    resultData.setRef(ref);
-                    resultData.setDescription(description);
-                    swaggerApiListDto.setResultData(resultData);
-                }
-            }
-        }
-        return swaggerApiListDto;
-    }
 
 
-    /**
-     * TODO
-     * jackson转换出具体的java对象
-     * 缺少：
-     * 1/yml结构解析：之后swagger是yml结构？
-     * 2/
-     *
-     * @param data
-     */
-    public static OpenApi transform2Obj(String data) throws RuntimeException {
-        if (CommonUtil.isEmpty(data)) {
-            throw new RuntimeException("data empty.");
-        }
-        data = data.replaceAll("\\$ref", "ref");
-        data = data.replaceAll("#/definitions/", "");
-        JSONObject userJson = JSONObject.parseObject(data);
-        OpenApi openApi = JSON.toJavaObject(userJson, OpenApi.class);
-        return openApi;
-    }
+
+
+
 
     /**
      * TODO
