@@ -15,6 +15,7 @@
  */
 package com.jiahangchun.test.tp.convert.doc;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.jiahangchun.test.tp.common.CommonUtil;
 import com.jiahangchun.test.tp.convert.SwaggerConverter;
@@ -22,12 +23,14 @@ import com.jiahangchun.test.tp.convert.bo.RequestParamBo;
 import com.jiahangchun.test.tp.convert.bo.RequestResultBo;
 import com.jiahangchun.test.tp.convert.bo.SwaggerDetailBo;
 import com.jiahangchun.test.tp.swagger.dto.ResultData;
+import net.minidev.json.JSONUtil;
 import org.apache.commons.lang3.Validate;
 import org.assertj.core.util.Lists;
 import org.springframework.http.HttpMethod;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters> {
@@ -172,22 +175,47 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
                                         return defaultValue;
                                     },
                                     (k1, k2) -> k2));
-            String refDataStr = CommonUtil.generateObjectByFieldToStr(refData);
+            Object refDataStr = CommonUtil.generateObjectByField(refData);
             requestParamBo.setRefData(refDataStr);
         }
 
         //实际转化下第一层的数据
+        Boolean postBodyFlag = Boolean.FALSE;
+        String postBodyContent = "";
         Map<String, Object> map = Maps.newHashMap();
+        long requestCount = requestParamVos.stream().filter(x -> {
+            String pos = x.getIn();
+            return !Objects.equals(pos, "header");
+        }).count();
+
         for (RequestParamBo requestParamBo : requestParamVos) {
+            String in = requestParamBo.getIn();
+            if (CommonUtil.isNotEmpty(in)) {
+                //排除放在请求头里面的一些参数
+                if (Objects.equals(in, "header")) {
+                    continue;
+                }
+            }
             String name = requestParamBo.getName();
             String defaultValue = requestParamBo.getDefaultValue();
             if (CommonUtil.isEmpty(defaultValue)) {
-                defaultValue = requestParamBo.getRefData();
+                map.put(name, requestParamBo.getRefData());
+                if (Objects.equals(requestCount, 1L)) {
+                    postBodyFlag = Boolean.TRUE;
+                    postBodyContent = JSON.toJSONString(requestParamBo.getRefData());
+                }
+            } else {
+                map.put(name, defaultValue);
             }
-            map.put(name, defaultValue);
         }
-        String objStr = CommonUtil.generateObjectByFieldToStr(map);
+        String objStr = "";
+        if (postBodyFlag) {
+            objStr = postBodyContent;
+        } else {
+            objStr = CommonUtil.generateObjectByFieldToStr(map).replaceAll("$cglib_prop_", "");
+        }
         markupDocBuilder.documentRequestBody(objStr);
+        markupDocBuilder.documentNewLine();
     }
 
     //warn:只支持两层结构的转化，多层结构不考虑（入参和出参有必要这么复杂么？）
@@ -263,6 +291,5 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
     public static SwaggerDocument.Parameters parameters(SwaggerDetailBo swagger, Map<String, List<ResultData>> definitionVoMap) {
         return new SwaggerDocument.Parameters(swagger, definitionVoMap);
     }
-
 
 }

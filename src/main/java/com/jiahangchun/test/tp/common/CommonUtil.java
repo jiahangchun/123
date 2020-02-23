@@ -298,18 +298,22 @@ public class CommonUtil {
      * @param propertyMap Map<生成的对象变量名称，生成的对象变量值>
      * @return Object
      */
-    private static Object generateObjectByField(Map<String, Object> propertyMap) throws Exception {
-        BeanGenerator generator = new BeanGenerator();
-        for (Map.Entry<String, Object> entry : propertyMap.entrySet()) {
-            generator.addProperty(entry.getKey(), entry.getValue().getClass());
+    public static Object generateObjectByField(Map<String, Object> propertyMap) {
+        try {
+            BeanGenerator generator = new BeanGenerator();
+            for (Map.Entry<String, Object> entry : propertyMap.entrySet()) {
+                generator.addProperty(entry.getKey(), entry.getValue().getClass());
+            }
+            // 构建对象
+            Object obj = generator.create();
+            // 赋值
+            for (Map.Entry<String, Object> en : propertyMap.entrySet()) {
+                org.apache.commons.beanutils.BeanUtils.setProperty(obj, en.getKey(), en.getValue());
+            }
+            return obj;
+        }catch (Exception e){
+            return null;
         }
-        // 构建对象
-        Object obj = generator.create();
-        // 赋值
-        for (Map.Entry<String, Object> en : propertyMap.entrySet()) {
-            org.apache.commons.beanutils.BeanUtils.setProperty(obj, en.getKey(), en.getValue());
-        }
-        return obj;
     }
 
     public static String generateObjectByFieldToStr(Map<String, Object> propertyMap) {

@@ -3,7 +3,11 @@ package com.jiahangchun.test.tp.convert.data.format;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jiahangchun.test.tp.common.CommonUtil;
+import com.jiahangchun.test.tp.convert.bo.RequestParamBo;
+import com.jiahangchun.test.tp.convert.bo.RequestResultBo;
+import com.jiahangchun.test.tp.convert.bo.SwaggerDetailBo;
 import com.jiahangchun.test.tp.swagger.dto.*;
+import com.jiahangchun.test.tp.swagger.vo.RequestResultVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
@@ -29,6 +33,74 @@ public class SwaggerDataFormat extends DataFormat<SwaggerDataFormat.Result> {
         //针对openApi解析数据
         this.format(openApi, result);
         return result;
+    }
+
+    /**
+     * 转换
+     *
+     * @param swaggerDetailBo
+     * @param result
+     */
+    public static SwaggerDetailBo transform(SwaggerDetailBo swaggerDetailBo, SwaggerDataFormat.Result result) {
+        SwaggerApiListDto swaggerApiListDto = result.getSwaggerApiListDto();
+        Map<String, List<ResultData>> definitionVoMap = result.getDefinitionMap();
+        swaggerDetailBo = CommonUtil.copyProperties(swaggerApiListDto, SwaggerDetailBo.class);
+
+        //填充一些请求参数
+        List<RequestParamBo> requestParamBos = Lists.newArrayList();
+        List<Parameter> parameterList = swaggerApiListDto.getParameters();
+        for (Parameter parameter : parameterList) {
+            RequestParamBo paramBo = CommonUtil.copyProperties(parameter, RequestParamBo.class);
+            requestParamBos.add(paramBo);
+        }
+        swaggerDetailBo.setRequestParamBos(requestParamBos);
+
+        //填充返回参数
+        ResultData resultData = swaggerApiListDto.getResultData();
+        String ref = resultData.getRef();
+        if (CommonUtil.isNotEmpty(ref)) {
+            String refResult = getInner(ref);
+            if (CommonUtil.isNotEmpty(refResult)) {
+                ref = refResult;
+            }
+            List<ResultData> relDataList = definitionVoMap.get(ref);
+            if (CommonUtil.isNotEmpty(relDataList)) {
+                List<RequestResultBo> requestResultBos = new ArrayList<>();
+                for (ResultData sample : relDataList) {
+                    RequestResultBo requestResultBo = CommonUtil.copyProperties(sample, RequestResultBo.class);
+                    requestResultBos.add(requestResultBo);
+                }
+                swaggerDetailBo.setRequestResultBos(requestResultBos);
+            }
+        }
+
+        return swaggerDetailBo;
+    }
+
+    /**
+     * 查询这个依赖的最底层的结构
+     * 为什么 我用正则 和 浏览器里面的正则 不一样？
+     *
+     * @param line
+     * @return
+     */
+    public static String getInner(String line) {
+        StringBuilder innerStr = new StringBuilder();
+        Boolean startInner = Boolean.FALSE;
+        for (char s : line.toCharArray()) {
+            if (Objects.equals(s, "»".charAt(0))) {
+                return innerStr.toString();
+            }
+            if (Objects.equals(s, "«".charAt(0))) {
+                innerStr = new StringBuilder();
+                startInner = Boolean.TRUE;
+            } else {
+                if (startInner) {
+                    innerStr.append(s);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -254,6 +326,7 @@ public class SwaggerDataFormat extends DataFormat<SwaggerDataFormat.Result> {
         private final String data;
         private List<SwaggerApiListDto> swaggerApiListDtoList;
         private Map<String, List<ResultData>> definitionMap;
+        private SwaggerApiListDto swaggerApiListDto;
 
         public Result(String data) {
             this.data = Validate.notNull(data, "data must not be null");
@@ -266,6 +339,11 @@ public class SwaggerDataFormat extends DataFormat<SwaggerDataFormat.Result> {
 
         public Result formatDefinitionMap(Map<String, List<ResultData>> definitionMap) {
             this.definitionMap = Validate.notNull(definitionMap, "definitionMap must not be null");
+            return this;
+        }
+
+        public Result formCenterApi(SwaggerApiListDto swaggerApiListDto) {
+            this.swaggerApiListDto = Validate.notNull(swaggerApiListDto, "swaggerApiListDto must not be null");
             return this;
         }
     }

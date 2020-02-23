@@ -84,11 +84,11 @@ public abstract class AbstractMarkupDocBuilder implements MarkupDocBuilder {
     }
 
     protected void documentRequestParam(Markup markup, String requestParam) {
-        documentBuilder.append(markup).append("请求参数").append(newLine).append(replaceNewLinesWithWhiteSpace(requestParam)).append(newLine).append(newLine);
+        documentBuilder.append(markup).append("请求参数描述").append(newLine).append(replaceNewLinesWithWhiteSpace(requestParam)).append(newLine).append(newLine);
     }
 
     protected void documentRequestBody(Markup markup, String requestBody) {
-        documentBuilder.append(markup).append("请求参数").append(newLine).append(replaceNewLinesWithWhiteSpace(requestBody)).append(newLine).append(newLine);
+        documentBuilder.append(markup).append("请求参数示例").append(newLine).append(replaceNewLinesWithWhiteSpace(requestBody)).append(newLine).append(newLine);
     }
 
     protected void documentResponseParam(Markup markup, String responseParam) {
@@ -97,6 +97,10 @@ public abstract class AbstractMarkupDocBuilder implements MarkupDocBuilder {
 
     protected void documentResponseBody(Markup markup, String responseBody) {
         documentBuilder.append(markup).append("返回请求示例").append(newLine).append(replaceNewLinesWithWhiteSpace(responseBody)).append(newLine).append(newLine);
+    }
+
+    protected void documentNewLine(Markup markup, String line) {
+        documentBuilder.append(markup).append(newLine).append(replaceNewLinesWithWhiteSpace(line)).append(newLine).append(newLine);
     }
 
     public String replaceNewLinesWithWhiteSpace(String content) {

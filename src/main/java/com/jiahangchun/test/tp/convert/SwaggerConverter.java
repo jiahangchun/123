@@ -1,6 +1,7 @@
 package com.jiahangchun.test.tp.convert;
 
 import com.jiahangchun.test.tp.common.CommonUtil;
+import com.jiahangchun.test.tp.convert.bo.RequestParamBo;
 import com.jiahangchun.test.tp.convert.bo.SwaggerDetailBo;
 import com.jiahangchun.test.tp.convert.config.*;
 import com.jiahangchun.test.tp.convert.data.SwaggerDataFetcher;
@@ -9,15 +10,14 @@ import com.jiahangchun.test.tp.convert.doc.MarkupDocBuilder;
 import com.jiahangchun.test.tp.convert.doc.MarkupDocBuilders;
 import com.jiahangchun.test.tp.convert.doc.MarkupLanguage;
 import com.jiahangchun.test.tp.convert.doc.SwaggerDocument;
+import com.jiahangchun.test.tp.swagger.dto.Parameter;
 import com.jiahangchun.test.tp.swagger.dto.ResultData;
 import com.jiahangchun.test.tp.swagger.dto.SwaggerApiListDto;
 import lombok.Data;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.lang3.Validate;
+import org.assertj.core.util.Lists;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -28,15 +28,6 @@ public class SwaggerConverter {
 
     private final Context context;
     private final SwaggerDocument swaggerDocument;
-    private static URL originSwaggerDataUrl = null;
-
-    static {
-        try {
-            originSwaggerDataUrl = new URL("http://petstore.swagger.io/v2/swagger.json");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 构造器
@@ -91,7 +82,7 @@ public class SwaggerConverter {
 
     public static class Builder {
 
-        private final URI swaggerLocation;
+        private final URL swaggerLocation;
         private SwaggerDetailBo swaggerDetailBo;
         private Map<String, List<ResultData>> definitionVoMap;
         private SwaggerConfigBuilder config;
@@ -100,9 +91,9 @@ public class SwaggerConverter {
 
         Builder(URL swaggerUrl, String searchUrl) {
             try {
-                this.swaggerLocation = swaggerUrl.toURI();
+                this.swaggerLocation = swaggerUrl;
                 this.searchUrl = searchUrl;
-            } catch (URISyntaxException e) {
+            } catch (Exception e) {
                 throw new IllegalArgumentException("swaggerURL is in a wrong format", e);
             }
         }
@@ -115,7 +106,7 @@ public class SwaggerConverter {
                 extensionRegister = new SwaggerExtensionBuilder().build();
             }
             //解析数据
-            initOriginData(originSwaggerDataUrl, searchUrl);
+            initOriginData(swaggerLocation, searchUrl);
             Context context = new Context(
                     configBO, extensionRegister, swaggerDetailBo, definitionVoMap, swaggerLocation);
             initExtensions(context);
@@ -131,15 +122,19 @@ public class SwaggerConverter {
         private void initOriginData(URL swaggerUrl, String searchUrl) {
             SwaggerDataFetcher swaggerDataFetcher = SwaggerDataFetcher.from(swaggerUrl).build();
             SwaggerDataFormat.Result result = swaggerDataFetcher.toFormatData();
+            //筛选出当前需要的值
             List<SwaggerApiListDto> swaggerApiListDtos = result.getSwaggerApiListDtoList();
             SwaggerApiListDto swaggerApiListDto = swaggerApiListDtos.stream().filter(x -> {
                 String url = x.getUrl();
                 return url.contains(searchUrl);
             }).findFirst().orElse(null);
+            result.formCenterApi(swaggerApiListDto);
             //解析生成具体的swagger详情
-            this.swaggerDetailBo = CommonUtil.copyProperties(swaggerApiListDto, SwaggerDetailBo.class);
+            SwaggerDetailBo swaggerDetailBo=SwaggerDataFormat.transform(this.swaggerDetailBo, result);
+            this.swaggerDetailBo=swaggerDetailBo;
             this.definitionVoMap = result.getDefinitionMap();
         }
+
 
         /**
          * 为了将我们获取到数据全部设置到插件里面，供给插件使用
@@ -168,7 +163,7 @@ public class SwaggerConverter {
     public static class Context {
         private final ConfigBO config;
         private final SwaggerDetailBo swaggerDetailBo;
-        private final URI swaggerLocation;
+        private final URL swaggerLocation;
         private final SwaggerExtensionRegister extensionRegistry;
         private final Labels labels;
         private Path outputPath;
@@ -178,7 +173,7 @@ public class SwaggerConverter {
                        SwaggerExtensionRegister extensionRegistry,
                        SwaggerDetailBo swagger,
                        Map<String, List<ResultData>> definitionVoMap,
-                       URI swaggerLocation) {
+                       URL swaggerLocation) {
             this.config = config;
             this.extensionRegistry = extensionRegistry;
             this.swaggerDetailBo = swagger;

@@ -234,7 +234,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
         ResultData resultData = swaggerApiListDto.getResultData();
         String ref = resultData.getRef();
         if (CommonUtil.isNotEmpty(ref)) {
-            String result = this.getInner(ref);
+            String result = SwaggerDataFormat.getInner(ref);
             if (CommonUtil.isNotEmpty(result)) {
                 ref = result;
             }
@@ -252,31 +252,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
     }
 
 
-    /**
-     * 查询这个依赖的最底层的结构
-     * 为什么 我用正则 和 浏览器里面的正则 不一样？
-     *
-     * @param line
-     * @return
-     */
-    private String getInner(String line) {
-        StringBuilder innerStr = new StringBuilder();
-        Boolean startInner = Boolean.FALSE;
-        for (char s : line.toCharArray()) {
-            if (Objects.equals(s, "»".charAt(0))) {
-                return innerStr.toString();
-            }
-            if (Objects.equals(s, "«".charAt(0))) {
-                innerStr = new StringBuilder();
-                startInner = Boolean.TRUE;
-            } else {
-                if (startInner) {
-                    innerStr.append(s);
-                }
-            }
-        }
-        return null;
-    }
+
 
     @Override
     public DefinitionVo getDefinitionVo(String definitionKey) {

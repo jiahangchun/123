@@ -9,11 +9,12 @@ import java.nio.file.Paths;
 
 public class DocTest {
 
-    public static void main(String[] args) throws Exception {
-        URL remoteSwaggerFile = new URL("http://petstore.swagger.io/v2/swagger.json");
-        Path outputDirectory = Paths.get("/Users/jiahangchun/Desktop/test.yml");
 
-        SwaggerConverter swaggerConverter=SwaggerConverter.from(remoteSwaggerFile,"/pet/{petId}/uploadImage").build();
+    public static void main(String[] args) throws Exception {
+//        URL remoteSwaggerFile = new URL("http://petstore.swagger.io/v2/swagger.json");
+//        Path outputDirectory = Paths.get("/Users/jiahangchun/Desktop/test.yml");
+//
+//        SwaggerConverter swaggerConverter=SwaggerConverter.from(remoteSwaggerFile,"/pet/{petId}/uploadImage").build();
 
     }
 }

@@ -87,12 +87,15 @@ public class MarkdownBuilder extends AbstractMarkupDocBuilder {
     @Override
     public MarkupDocBuilder documentResponseParam(String requestParam) {
         documentResponseParam(Markdown.DOCUMENT_TITLE, requestParam);
+        documentNewLine();
         return this;
     }
 
     @Override
     public MarkupDocBuilder documentResponseBody(String responseBody) {
-        documentResponseBody(Markdown.DOCUMENT_TITLE, responseBody);
+        documentNewLine();
+        documentResponseBody(Markdown.DOCUMENT_TITLE, " ");
+        block(responseBody, MarkupBlockStyle.LISTING);
         return this;
     }
 
@@ -140,5 +143,11 @@ public class MarkdownBuilder extends AbstractMarkupDocBuilder {
     @Override
     public String addFileExtension(String fileName) {
         return fileName + MarkupLanguage.MARKDOWN.getFileNameExtensions().get(0);
+    }
+
+    @Override
+    public MarkupDocBuilder documentNewLine() {
+        documentNewLine(Markdown.LINE_BREAK, "");
+        return this;
     }
 }

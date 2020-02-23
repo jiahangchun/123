@@ -141,4 +141,11 @@ public interface MarkupDocBuilder {
      * @param options the file open options
      */
     void writeToFileWithoutExtension(Path file, Charset charset, OpenOption... options);
+
+    /**
+     * 增加一行
+     * @param
+     * @return
+     */
+    MarkupDocBuilder documentNewLine();
 }
