@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>com.your.company.unique.plugin.id</id>
+    <id>JiahangchunTransDoc</id>
     <name>TranslateToDoc</name>
     <version>1.0</version>
     <vendor email="jiahangchun@163.com" url="https://github.com">jiahangchun</vendor>
@@ -8,11 +8,7 @@
       Automatically generate some targeted documents.<br>
     ]]></description>
 
-    <change-notes><![CDATA[
-      1.test plugin <br>
-      2.translate swagger to doc <br>
-    ]]>
-    </change-notes>
+    <change-notes><![CDATA[	Change notes will be filled by gradle build <br>]]></change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

@@ -1,7 +1,7 @@
 # how to use
 按照idea硬件安装的方式当前插件就可以了,可以参考[Doc](https://www.jetbrains.com/help/idea/managing-plugins.html)
 
-# 核心思想：约定大于配置
+#约定大于配置
 在这个的开发过程中，我设置了许多的限制条件。
 比如
 1. 现在只支持post & get 操作;
@@ -10,12 +10,17 @@
 
 
 # bug
-这个插件完全没有经过验证测试，
-我的本意是希望更多的人来帮我修复bug，我只是提供一个半成品工具。
-所以，但凡遇到任何疑问，自己看代码，自己修复。
+第一次 先用 convenient的dev-200120-jhc-swaggerVersion分支测试吧。
+我就还没来得及测试过，只是简单尝试了下接口：/crm/shipId/get/default/shipId
+bug嘛，有很多，有没有人帮忙？
 
 ### developer test
-run DocTest.main
+run DocTest.main 测试主要方法
+or run gradle    测试plugins文档上有的
+
+### how to build plugins
+gradle build 生成可执行jar，在/build/libs下找找就有了
+
 
 # warn
 ### about lombok
