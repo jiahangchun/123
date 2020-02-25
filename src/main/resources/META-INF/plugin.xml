@@ -1,0 +1,34 @@
+<idea-plugin>
+    <id>com.your.company.unique.plugin.id</id>
+    <name>TranslateToDoc</name>
+    <version>1.0</version>
+    <vendor email="jiahangchun@163.com" url="https://github.com">jiahangchun</vendor>
+
+    <description><![CDATA[
+      Automatically generate some targeted documents.<br>
+    ]]></description>
+
+    <change-notes><![CDATA[
+      1.test plugin <br>
+      2.translate swagger to doc <br>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <group id="TP_Group" text="TP" description="Self function">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action id="TranslateDoc.TranslateDocAction" class="com.tp.TranslateDocAction"
+                    text="接口文档转换"
+                    description="Translate swagger to doc">
+            </action>
+        </group>
+    </actions>
+</idea-plugin>

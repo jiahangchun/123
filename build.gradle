@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.4.16'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public'}
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/org.springframework/spring-beans
+    compile group: 'org.springframework', name: 'spring-beans', version: '5.1.13.RELEASE'
+    // https://mvnrepository.com/artifact/com.alibaba/fastjson
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
+    // https://mvnrepository.com/artifact/com.google.maps/google-maps-services
+    compile group: 'com.google.maps', name: 'google-maps-services', version: '0.11.0'
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.3.1'
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version: '28.1-jre'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2
+    compile group: 'org.apache.commons', name: 'commons-configuration2', version: '2.6'
+    // https://mvnrepository.com/artifact/org.asciidoctor/asciidoctorj
+    compile group: 'org.asciidoctor', name: 'asciidoctorj', version: '2.2.0'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+    // https://mvnrepository.com/artifact/io.vavr/vavr
+    compile group: 'io.vavr', name: 'vavr', version: '0.10.2'
+    // https://mvnrepository.com/artifact/cglib/cglib-nodep
+    compile group: 'cglib', name: 'cglib-nodep', version: '3.2.4'
+    // https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version '2019.3.1'
+}
+patchPluginXml {
+    changeNotes """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
