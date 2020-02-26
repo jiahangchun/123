@@ -213,6 +213,7 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
         } else {
             objStr = CommonUtil.generateObjectByFieldToStr(map).replaceAll("$cglib_prop_", "");
         }
+        markupDocBuilder.documentNewLine();
         markupDocBuilder.documentRequestBody(objStr);
         markupDocBuilder.documentNewLine();
     }
@@ -260,6 +261,7 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
                 }
             }
         }
+        markupDocBuilder.documentNewLine();
         markupDocBuilder.documentRequestParam(" ");
         markupDocBuilder.table(columns, cells);
     }

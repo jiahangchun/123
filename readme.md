@@ -27,7 +27,13 @@ gradle build 生成可执行jar，在/build/libs下找找就有了
 https://plugins.gradle.org/plugin/io.freefair.lombok
 
 
+### GUI DESIGNER 
+这个gradle好像不支持的，只能用maven去生成下，然后让它自动生成UI.
+可以[参考](https://www.iteye.com/blog/panyongzheng-1897722)
+
+
 ### idea plugin doc
+[gradle build plugin](https://www.cnblogs.com/hama1993/p/12034514.html)
 [doc](https://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/gradle_guide.html)
 [gradle deployment](https://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/deployment.html)
 

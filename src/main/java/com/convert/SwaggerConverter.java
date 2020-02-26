@@ -64,7 +64,7 @@ public class SwaggerConverter {
         builder.writeToFile(outputDirectory.resolve("markdown"), StandardCharsets.UTF_8);
     }
 
-    public String toConvertString(){
+    public String toConvertString() {
         //选择具体的处理器
         //将对象转换成string
         MarkupDocBuilder builder = applyDocument();
@@ -82,6 +82,25 @@ public class SwaggerConverter {
                 SwaggerDocument.parameters(
                         context.getSwaggerDetailBo(),
                         context.getDefinitionVoMap()));
+    }
+
+    /**
+     * 获取详情
+     *
+     * @param dataUrl
+     * @param searchUrl
+     * @return
+     */
+    public static String getMarkDownStr(String dataUrl, String searchUrl) {
+        String data = "";
+        try {
+            URL remoteSwaggerFile = new URL(dataUrl);
+            SwaggerConverter swaggerConverter = SwaggerConverter.from(remoteSwaggerFile, searchUrl).build();
+            data = swaggerConverter.toConvertString();
+        } catch (Exception e) {
+            data = "meet error:" + e.getMessage();
+        }
+        return data;
     }
 
     public static class Builder {
@@ -130,19 +149,19 @@ public class SwaggerConverter {
             List<SwaggerApiListDto> swaggerApiListDtos = result.getSwaggerApiListDtoList();
             SwaggerApiListDto swaggerApiListDto = swaggerApiListDtos.stream().filter(x -> {
                 String url = x.getUrl();
-                if(CommonUtil.isEmpty(url)){
+                if (CommonUtil.isEmpty(url)) {
                     return false;
                 }
                 return url.contains(searchUrl);
             }).findFirst().orElse(null);
-            if(CommonUtil.isEmpty(swaggerApiListDto)){
+            if (CommonUtil.isEmpty(swaggerApiListDto)) {
                 throw new BizException("can not found api.");
             }
             result.formCenterApi(swaggerApiListDto);
             //解析生成具体的swagger详情
-            SwaggerDetailBo swaggerDetailBo=SwaggerDataFormat.transform(this.swaggerDetailBo, result);
+            SwaggerDetailBo swaggerDetailBo = SwaggerDataFormat.transform(this.swaggerDetailBo, result);
             Validate.notNull(swaggerDetailBo, "swaggerApiListDto must not be null");
-            this.swaggerDetailBo=swaggerDetailBo;
+            this.swaggerDetailBo = swaggerDetailBo;
             this.definitionVoMap = result.getDefinitionMap();
         }
 

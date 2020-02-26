@@ -9,7 +9,7 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public'}
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
     mavenCentral()
 }
 
@@ -39,6 +39,9 @@ dependencies {
     compile group: 'cglib', name: 'cglib-nodep', version: '3.2.4'
     // https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
+    // https://mvnrepository.com/artifact/com.intellij/forms_rt
+    //swing designer ui auto generator code
+    compile group: 'com.intellij', name: 'forms_rt', version: '7.0.3'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
