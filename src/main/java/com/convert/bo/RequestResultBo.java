@@ -22,7 +22,7 @@ public class RequestResultBo {
     /**
      * 当ref存在的时候，我们为了它模拟出了一组特殊的数据
      */
-    private String refData;
+    private Object refData;
 
     public String getName() {
         return name;
@@ -64,11 +64,11 @@ public class RequestResultBo {
         this.ref = ref;
     }
 
-    public String getRefData() {
+    public Object getRefData() {
         return refData;
     }
 
-    public void setRefData(String refData) {
+    public void setRefData(Object refData) {
         this.refData = refData;
     }
 }

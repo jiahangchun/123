@@ -16,6 +16,8 @@
 package com.convert.doc;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.common.HttpMethod;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -59,6 +61,37 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
         return markupDocBuilder;
     }
 
+    /**
+     * 混乱的格式修正
+     *
+     * @param data
+     * @return
+     */
+    private String generatorJsonData(String data) {
+        if (CommonUtil.isEmpty(data)) {
+            return "";
+        }
+        if (Objects.equals(data, "null")) {
+            return "Sorry, we can't combine JSON data based on the given parameters.\n" +
+                    "The reason may be that there is no return value in itself, or the data structure may be too complex.";
+        }
+        String result = "";
+        //工具的问题
+        result = data.replaceAll("$cglib_prop_", "");
+        result = data.replaceAll("\"\\{", "\\{");
+        result = result.replaceAll("}\"", "}");
+        result = result.replaceAll("\\\\", "");
+
+        try {
+            JSONObject object = JSONObject.parseObject(result);
+            result = JSON.toJSONString(object, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+                    SerializerFeature.WriteDateUseDateFormat);
+        } catch (Exception e) {
+            //给的格式解析不了，老老实实用原来的吧
+        }
+        return result;
+    }
+
     private void buildDocumentResponseBody(
             MarkupDocBuilder markupDocBuilder,
             List<RequestResultBo> responseResultBos,
@@ -89,7 +122,7 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
                                         return defaultValue;
                                     },
                                     (k1, k2) -> k2));
-            String refDataStr = CommonUtil.generateObjectByFieldToStr(refData);
+            Object refDataStr = CommonUtil.generateObjectByField(refData);
             resultBo.setRefData(refDataStr);
         }
 
@@ -97,14 +130,49 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
         Map<String, Object> map = Maps.newHashMap();
         for (RequestResultBo resultBo : responseResultBos) {
             String name = resultBo.getName();
-            String defaultValue = resultBo.getExample();
-            if (CommonUtil.isEmpty(defaultValue)) {
-                defaultValue = resultBo.getRefData();
-            }
-            map.put(name, defaultValue);
+            Object defaultValue = this.genDefaultValue(resultBo.getExample(), resultBo.getRefData());
+            map.put(name, this.formatValue(resultBo.getType(), defaultValue));
         }
         String objStr = CommonUtil.generateObjectByFieldToStr(map);
-        markupDocBuilder.documentResponseBody(objStr);
+        markupDocBuilder.documentResponseBody(this.generatorJsonData(objStr));
+    }
+
+    /**
+     * 按照类型组织默认值
+     *
+     * @param type
+     * @param defaultValue
+     */
+    private Object formatValue(String type, Object defaultValue) {
+        Object result = defaultValue;
+        if (CommonUtil.isNotEmpty(type)) {
+            switch (type) {
+                case "array":
+                    List<Object> defList = Lists.newArrayList();
+                    for (int i = 0; i < 3; i++) {
+                        defList.add(JSON.toJSONString(defaultValue));
+                    }
+                    result = defList;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取默认值
+     *
+     * @param defaultValue
+     * @param refData
+     * @return
+     */
+    private Object genDefaultValue(String defaultValue, Object refData) {
+        if (CommonUtil.isEmpty(defaultValue)) {
+            return refData;
+        }
+        return defaultValue;
     }
 
     private void buildDocumentResponseParam(MarkupDocBuilder markupDocBuilder,
@@ -172,50 +240,47 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
                                         }
                                         String defaultValue = CommonUtil.getDefaultValue(type);
                                         return defaultValue;
-                                    },
-                                    (k1, k2) -> k2));
+                                    }, (k1, k2) -> k2));
             Object refDataStr = CommonUtil.generateObjectByField(refData);
             requestParamBo.setRefData(refDataStr);
         }
 
         //实际转化下第一层的数据
-        Boolean postBodyFlag = Boolean.FALSE;
-        String postBodyContent = "";
-        Map<String, Object> map = Maps.newHashMap();
-        long requestCount = requestParamVos.stream().filter(x -> {
-            String pos = x.getIn();
-            return !Objects.equals(pos, "header");
-        }).count();
+        String objStr = this.formRequestBody(requestParamVos);
 
+        markupDocBuilder.documentNewLine();
+        markupDocBuilder.documentRequestBody(this.generatorJsonData(objStr));
+        markupDocBuilder.documentNewLine();
+    }
+
+    /**
+     * 组合请求body
+     *
+     * @param requestParamVos
+     * @return
+     */
+    private String formRequestBody(List<RequestParamBo> requestParamVos) {
+        Map<String, Object> map = Maps.newHashMap();
         for (RequestParamBo requestParamBo : requestParamVos) {
             String in = requestParamBo.getIn();
+            String type = requestParamBo.getType();
+            String name = requestParamBo.getName();
+            Object defaultValue = this.genDefaultValue(requestParamBo.getDefaultValue(), requestParamBo.getRefData());
+            Object actVal = this.formatValue(type, defaultValue);
             if (CommonUtil.isNotEmpty(in)) {
                 //排除放在请求头里面的一些参数
                 if (Objects.equals(in, "header")) {
                     continue;
                 }
-            }
-            String name = requestParamBo.getName();
-            String defaultValue = requestParamBo.getDefaultValue();
-            if (CommonUtil.isEmpty(defaultValue)) {
-                map.put(name, requestParamBo.getRefData());
-                if (Objects.equals(requestCount, 1L)) {
-                    postBodyFlag = Boolean.TRUE;
-                    postBodyContent = JSON.toJSONString(requestParamBo.getRefData());
+                //如果已经是requestBody请求方式，那么直接返回
+                //这里不支持复杂的操作
+                if (Objects.equals(in, "body")) {
+                    return JSON.toJSONString(actVal);
                 }
-            } else {
-                map.put(name, defaultValue);
             }
+            map.put(name, actVal);
         }
-        String objStr = "";
-        if (postBodyFlag) {
-            objStr = postBodyContent;
-        } else {
-            objStr = CommonUtil.generateObjectByFieldToStr(map).replaceAll("$cglib_prop_", "");
-        }
-        markupDocBuilder.documentNewLine();
-        markupDocBuilder.documentRequestBody(objStr);
-        markupDocBuilder.documentNewLine();
+        return CommonUtil.generateObjectByFieldToStr(map);
     }
 
     //warn:只支持两层结构的转化，多层结构不考虑（入参和出参有必要这么复杂么？）
@@ -234,9 +299,9 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
             List<String> cc = Lists.newArrayList();
             cc.add(requestParamBo.getName());
             cc.add(requestParamBo.getIn());
-            Boolean required=requestParamBo.getRequired();
-            if(CommonUtil.isEmpty(required)){
-                required=Boolean.FALSE;
+            Boolean required = requestParamBo.getRequired();
+            if (CommonUtil.isEmpty(required)) {
+                required = Boolean.FALSE;
             }
             cc.add(required.toString());
             cc.add(requestParamBo.getType());
