@@ -10,17 +10,27 @@ plugin 放在了 根目录 的zip 文件夹下面了
 3. 复杂对象 不展示，或者展示出错;  
 4. 不支持 path 路径  
 
+# 实际效果  
+翻墙查看效果
+![安装教程1](resultPng/install1.png)  
+![安装教程1](https://github.com/jiahangchun/123/blob/ideaPlugin/resultPng/install1.png)  
+![安装教程2](resultPng/install2.png)  
+![使用教程1](resultPng/use1.png)  
+![使用教程2](resultPng/use2.png)  
+![结果1](resultPng/result1.png)  
+![结果2](resultPng/result2.png)  
+
+
 
 # bug 
 第一次 先用 convenient的dev-200120-jhc-swaggerVersion分支测试吧。   
 我就还没来得及测试过，只是简单尝试了下接口：/crm/shipId/get/default/shipId   
 bug完全没修过，本着遇到一个改一个的原则去弄的  
 
-## developer test  
+## developer test & build
 run DocTest.main 测试主要方法  
-or run gradle    测试plugins文档上有的  
+or run gradle    测试plugins文档上有的   
 
-## how to build plugins   
 gradle -> Tasks -> intellij -> buildPlugin  
 另外不要用 ```gradle build```去打包，到时候会出现文件找不到引用的错误  
 也不要转成 maven，然后通过BuildDev的方式去生成zip，因为到时候也会出现引用的相关问题  
