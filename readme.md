@@ -2,6 +2,12 @@
 按照idea硬件安装的方式当前插件就可以了,可以参考[Doc](https://www.jetbrains.com/help/idea/managing-plugins.html)  
 plugin 放在了 根目录 的zip 文件夹下面了
 
+# version
+目前现有的提供了 idea20190301 & idea201701版本。  
+如果自己的idea不是这两种会报错：Xxx is incompatible with this installation   
+放心，我也提供了相应的解决办法：
+修改 build.gradle 文件中的 intellij.version 从"2019.3.1"到你自己的版本号(点击左上角的About Idea Xxx)，重新 打包编译，生成zip包（看下面）
+
 # 使用教程 
 翻墙查看效果(要全局代理模式)  
 安装  
