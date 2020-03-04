@@ -1,14 +1,8 @@
-# 页面配置
-### ant-design pro 准备
-* 安装 yarn  
-```brew install yarn```
-* 安装 node 
-
-### ant-design pro
- [快速搭建](https://pro.ant.design/docs/getting-started-cn)
- [组件](https://ant.design/docs/react/introduce-cn)
-
-
+### 策略模式
+1. [三种spring策略模式](https://www.jianshu.com/p/5ccf1706297d)
+2. [优雅的责任链模式](https://www.jianshu.com/p/2506a6cbeee3)
+3. [spring中责任链的使用](https://zhuanlan.zhihu.com/p/67859090)
+4. [spring中责任链的使用 之 真大神](https://juejin.im/post/5dcbf4fae51d451bd44c62da)
 
 
 
