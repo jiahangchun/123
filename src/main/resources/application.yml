@@ -1,0 +1,14 @@
+server:
+  port: 1234
+  servlet:
+    context-path: /tp
+
+logging:
+  level:
+    com.netflix.discovery: 'OFF'
+    org.springframework.cloud: 'DEBUG'
+
+spring:
+  cloud:
+    config:
+      fail-fast: true
