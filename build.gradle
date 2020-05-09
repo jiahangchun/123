@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.0'
+version '1.2'
 
 sourceCompatibility = 1.8
 
@@ -44,12 +44,13 @@ dependencies {
     compile group: 'com.intellij', name: 'forms_rt', version: '7.0.3'
 }
 
+
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2019.3.1'
+    version '2020.1.1'
 }
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      fetch default wiki.<br>
+      <em>more type supported</em>"""
 }

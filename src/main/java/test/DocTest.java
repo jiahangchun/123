@@ -3,7 +3,7 @@ package test;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.convert.SwaggerConverter;
+import com.tp.components.v1.convert.SwaggerConverter;
 
 import java.net.MalformedURLException;
 import java.net.URL;

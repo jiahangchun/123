@@ -1,7 +1,7 @@
 package com.tp.components.test;
 
-import com.common.CommonUtil;
-import com.convert.SwaggerConverter;
+import com.tp.components.v1.common.JMCommonUtil;
+import com.tp.components.v1.convert.SwaggerConverter;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +29,7 @@ public class TransDocForm extends DialogWrapper {
         searchButton.addActionListener(e -> {
             String searchUrlText = searchUrl.getText();
             String swaggerContext = defaultSwaggerContext.getText();
-            if (CommonUtil.isEmpty(searchUrlText) || CommonUtil.isEmpty(swaggerContext)) {
+            if (JMCommonUtil.isEmpty(searchUrlText) || JMCommonUtil.isEmpty(swaggerContext)) {
                 result.setText("请填写必要的参数");
             }
             result.setText("请稍等，我们正在查询数据。你知道的....swagger 很慢的。");

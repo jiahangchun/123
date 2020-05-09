@@ -40,7 +40,8 @@ plugin 放在了 根目录 的zip 文件夹下面了
 run DocTest.main        测试主要方法  
 or ```run gradle```     测试plugins文档上有的   
 
-```gradle -> Tasks -> intellij -> buildPlugin```
+> https://stackoverflow.com/questions/53764584/java-lang-noclassdeffounderror-in-intellij-plugin
+```gradle -> Tasks -> intellij -> buildPlugin``` (包在build/distributions下)
 另外不要用 ```gradle build```去打包，到时候会出现文件找不到引用的错误  
 也不要转成 maven，然后通过BuildDev的方式去生成zip，因为到时候也会出现引用的相关问题  
 

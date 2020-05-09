@@ -1,0 +1,373 @@
+package com.tp.components.v1.convert.data.format;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.tp.components.v1.common.JMCommonUtil;
+import com.tp.components.v1.common.HttpMethod;
+import com.tp.components.v1.convert.bo.RequestParamBo;
+import com.tp.components.v1.convert.bo.RequestResultBo;
+import com.tp.components.v1.convert.bo.SwaggerDetailBo;
+import com.google.common.collect.Lists;
+import com.tp.components.v1.swagger.dto.*;
+import org.apache.commons.lang3.Validate;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+
+public class SwaggerDataFormat extends DataFormat<SwaggerDataFormat.Result> {
+
+    private static final String SEP = "###";
+
+    @Override
+    public SwaggerDataFormat.Result apply(SwaggerDataFormat.Parameters parameters) {
+        //获取原始的数据
+        String data = parameters.data;
+        Result result = new Result(data);
+        //将数据转换成对象格式
+        OpenApi openApi = transform2Obj(data);
+        //针对openApi解析数据
+        this.format(openApi, result);
+        return result;
+    }
+
+    /**
+     * 转换
+     *
+     * @param swaggerDetailBo
+     * @param result
+     */
+    public static SwaggerDetailBo transform(SwaggerDetailBo swaggerDetailBo, SwaggerDataFormat.Result result) {
+        SwaggerApiListDto swaggerApiListDto = result.getSwaggerApiListDto();
+        Map<String, List<ResultData>> definitionVoMap = result.getDefinitionMap();
+        swaggerDetailBo = JMCommonUtil.copyProperties(swaggerApiListDto, SwaggerDetailBo.class);
+
+        //填充一些请求参数
+        List<RequestParamBo> requestParamBos = Lists.newArrayList();
+        List<Parameter> parameterList = swaggerApiListDto.getParameters();
+        for (Parameter parameter : parameterList) {
+            RequestParamBo paramBo = JMCommonUtil.copyProperties(parameter, RequestParamBo.class);
+            requestParamBos.add(paramBo);
+        }
+        swaggerDetailBo.setRequestParamBos(requestParamBos);
+
+        //填充返回参数
+        ResultData resultData = swaggerApiListDto.getResultData();
+        String ref = resultData.getRef();
+        if (JMCommonUtil.isNotEmpty(ref)) {
+            String refResult = getInner(ref);
+            if (JMCommonUtil.isNotEmpty(refResult)) {
+                ref = refResult;
+            }
+            List<ResultData> relDataList = definitionVoMap.get(ref);
+            if (JMCommonUtil.isNotEmpty(relDataList)) {
+                List<RequestResultBo> requestResultBos = new ArrayList<>();
+                for (ResultData sample : relDataList) {
+                    RequestResultBo requestResultBo = JMCommonUtil.copyProperties(sample, RequestResultBo.class);
+                    requestResultBos.add(requestResultBo);
+                }
+                swaggerDetailBo.setRequestResultBos(requestResultBos);
+            }
+        }
+
+        return swaggerDetailBo;
+    }
+
+    /**
+     * 查询这个依赖的最底层的结构
+     * 为什么 我用正则 和 浏览器里面的正则 不一样？
+     *
+     * @param line
+     * @return
+     */
+    public static String getInner(String line) {
+        StringBuilder innerStr = new StringBuilder();
+        Boolean startInner = Boolean.FALSE;
+        for (char s : line.toCharArray()) {
+            if (Objects.equals(s, "»".charAt(0))) {
+                return innerStr.toString();
+            }
+            if (Objects.equals(s, "«".charAt(0))) {
+                innerStr = new StringBuilder();
+                startInner = Boolean.TRUE;
+            } else {
+                if (startInner) {
+                    innerStr.append(s);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 转换
+     *
+     * @param openApi
+     * @param result
+     */
+    private void format(OpenApi openApi, Result result) {
+        String host = openApi.getHost();
+        String platform = openApi.getBasePath();
+        //解析出对应的列表
+        List<SwaggerApiListDto> swaggerApiListDtos = getSwaggerApiListDtos(openApi);
+        //添加基本信息
+        swaggerApiListDtos.stream().forEach(x -> {
+            x.setUrl(platform + x.getUrl());
+            x.setHost(host);
+        });
+        //获取定义的对象
+        Map<String, List<ResultData>> definitionMap = queryDefinitionMap(openApi);
+        //将获取到的信息封装到结果参数里面
+        result.formatDefinitionMap(definitionMap).formatSwaggerApiList(swaggerApiListDtos);
+    }
+
+    /**
+     * 查询定义的结构
+     *
+     * @param openApi
+     * @return
+     */
+    public static Map<String, List<ResultData>> queryDefinitionMap(OpenApi openApi) {
+        //解析定义的类
+        Map<String, List<ResultData>> definitionMap = new HashMap<>();
+        LinkedHashMap<String, ReturnResult> resultLinkedHashMap = openApi.getDefinitions();
+        for (Map.Entry<String, ReturnResult> entry : resultLinkedHashMap.entrySet()) {
+            String returnKey = entry.getKey();
+            ReturnResult returnResult = entry.getValue();
+            if (JMCommonUtil.isEmpty(returnKey) || JMCommonUtil.isEmpty(returnResult)) {
+                continue;
+            }
+            String type = returnResult.getType();
+            Map<String, ReturnProperty> propertyMap = returnResult.getProperties();
+            List<ResultData> resultDataList = new ArrayList<>();
+            if (Objects.equals(type, "object")) {
+                if (JMCommonUtil.isNotEmpty(propertyMap)) {
+                    for (Map.Entry<String, ReturnProperty> propertyEntry : propertyMap.entrySet()) {
+                        String returnName = propertyEntry.getKey();
+                        ReturnProperty returnProperty = propertyEntry.getValue();
+                        String returnType = returnProperty.getType();
+                        String description = returnProperty.getDescription();
+                        String example = returnProperty.getExample();
+                        String ref = "";
+                        Map<String, String> items = returnProperty.getItems();
+                        if (JMCommonUtil.isNotEmpty(items)) {
+                            ref = items.get("ref");
+                        }
+                        ResultData resultData = new ResultData();
+                        resultData.setName(returnName);
+                        resultData.setDescription(description);
+                        resultData.setExample(example);
+                        resultData.setType(returnType);
+                        resultData.setRef(ref);
+                        resultDataList.add(resultData);
+                    }
+                }
+            } else {
+                //TODO 其他情况之后再加
+            }
+            definitionMap.put(returnKey, resultDataList);
+        }
+        return definitionMap;
+    }
+
+
+    public static List<SwaggerApiListDto> getSwaggerApiListDtos(OpenApi openApi) {
+        LinkedHashMap<String, PathItem> map = openApi.getPaths();
+        List<SwaggerApiListDto> swaggerApiListDtoList = new ArrayList<>(map.size());
+        try {
+            for (Map.Entry<String, PathItem> entry : map.entrySet()) {
+                String url = entry.getKey();
+                PathItem pathItem = entry.getValue();
+                if (JMCommonUtil.isEmpty(pathItem)) {
+                    continue;
+                }
+                try {
+                    List<SwaggerApiListDto> swaggerApiListDto = formApiInfo(pathItem, url);
+                    swaggerApiListDtoList.addAll(swaggerApiListDto);
+                } catch (Exception e) {
+                    System.out.println("can not gen apiList for "+ e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            return Lists.newArrayList();
+        }
+        return swaggerApiListDtoList;
+    }
+
+    private static List<SwaggerApiListDto> formApiInfo(PathItem pathItem, String url) throws Exception {
+        if (JMCommonUtil.isEmpty(pathItem)) {
+            return new ArrayList<>();
+        }
+        List<SwaggerApiListDto> apiListDtoList = new ArrayList<>();
+        Field[] fields = pathItem.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            if (Objects.equals(Operation.class.getTypeName(),
+                    field.getGenericType().getTypeName())) {
+                field.setAccessible(true);
+                String methodName = field.getName();
+                Method m = (Method) pathItem.getClass().getMethod(
+                        "get" + getMethodName(field.getName()));
+                Operation operation = (Operation) m.invoke(pathItem);
+                if (JMCommonUtil.isEmpty(operation) || JMCommonUtil.isEmpty(methodName)) {
+                    continue;
+                }
+                HttpMethod method = JMCommonUtil.getMethodByName(methodName);
+                if (JMCommonUtil.isEmpty(method)) {
+                    continue;
+                }
+                SwaggerApiListDto apiListDto = resolvingPathItem(operation, url, method);
+                if (JMCommonUtil.isEmpty(apiListDto)) {
+                    continue;
+                }
+                apiListDtoList.add(apiListDto);
+            }
+        }
+        return apiListDtoList;
+    }
+
+    private static SwaggerApiListDto resolvingPathItem(Operation operation, String url, HttpMethod httpMethod) {
+        if (JMCommonUtil.isEmpty(operation) || JMCommonUtil.isEmpty(url) || JMCommonUtil.isEmpty(httpMethod)) {
+            return null;
+        }
+        SwaggerApiListDto swaggerApiListDto = new SwaggerApiListDto();
+        swaggerApiListDto.setMethod(httpMethod);
+        swaggerApiListDto.setUrl(url);
+        swaggerApiListDto.setDescription(operation.getSummary());
+        swaggerApiListDto.setTags(operation.getTags());
+        List<Parameter> parameters = operation.getParameters();
+        if (JMCommonUtil.isNotEmpty(parameters)) {
+            parameters.stream().forEach(x -> {
+                Map<String, String> map = x.getSchema();
+                if (JMCommonUtil.isNotEmpty(map)) {
+                    x.setRef(map.get("ref"));
+                }
+            });
+        }
+        swaggerApiListDto.setParameters(parameters);
+        String keyStr = swaggerApiListDto.getMethod().name() + SEP + swaggerApiListDto.getUrl();
+        swaggerApiListDto.setKey(JMCommonUtil.md5s(keyStr));
+        LinkedHashMap<String, ApiResponse> map = operation.getResponses();
+        if (JMCommonUtil.isNotEmpty(map)) {
+            for (Map.Entry<String, ApiResponse> entry : map.entrySet()) {
+                String code = entry.getKey();
+                if (JMCommonUtil.isEmpty(code) || !Objects.equals(code, "200")) {
+                    //只需要正常返回的结果
+                    continue;
+                }
+                ApiResponse apiResponse = entry.getValue();
+//                ApiResponse apiResponse = JSON.toJavaObject(entry.getValue(), ApiResponse.class);;
+                if (JMCommonUtil.isNotEmpty(apiResponse)) {
+                    String description = apiResponse.getDescription();
+                    String ref = "";
+                    Map<String, String> schema = apiResponse.getSchema();
+                    if (JMCommonUtil.isNotEmpty(schema)) {
+                        ref = schema.get("ref");
+                    }
+                    ResultData resultData = new ResultData();
+                    resultData.setRef(ref);
+                    resultData.setDescription(description);
+                    swaggerApiListDto.setResultData(resultData);
+                }
+            }
+        }
+        return swaggerApiListDto;
+    }
+
+
+    /**
+     * 格式
+     *
+     * @param fieldName
+     * @return
+     * @throws Exception
+     */
+    private static String getMethodName(String fieldName) throws Exception {
+        byte[] items = fieldName.getBytes();
+        items[0] = (byte) ((char) items[0] - 'a' + 'A');
+        return new String(items);
+    }
+
+
+    /**
+     * TODO
+     * jackson转换出具体的java对象
+     * 缺少：
+     * 1/yml结构解析：之后swagger是yml结构？
+     * 2/
+     *
+     * @param data
+     */
+    public static OpenApi transform2Obj(String data) throws RuntimeException {
+        if (JMCommonUtil.isEmpty(data)) {
+            throw new RuntimeException("data empty.");
+        }
+        data = data.replaceAll("\\$ref", "ref");
+        data = data.replaceAll("#/definitions/", "");
+        JSONObject userJson = JSONObject.parseObject(data);
+        OpenApi openApi = JSON.toJavaObject(userJson, OpenApi.class);
+        return openApi;
+    }
+
+    public static class Parameters {
+        private final String data;
+
+        public Parameters(String data) {
+            this.data = Validate.notNull(data, "data must not be null");
+        }
+    }
+
+    public static class Result {
+        private final String data;
+        private List<SwaggerApiListDto> swaggerApiListDtoList;
+        private Map<String, List<ResultData>> definitionMap;
+        private SwaggerApiListDto swaggerApiListDto;
+
+        public Result(String data) {
+            this.data = Validate.notNull(data, "data must not be null");
+        }
+
+        public Result formatSwaggerApiList(List<SwaggerApiListDto> swaggerApiListDtoList) {
+            this.swaggerApiListDtoList = Validate.notNull(swaggerApiListDtoList, "swaggerApiListDtoList must not be null");
+            return this;
+        }
+
+        public Result formatDefinitionMap(Map<String, List<ResultData>> definitionMap) {
+            this.definitionMap = Validate.notNull(definitionMap, "definitionMap must not be null");
+            return this;
+        }
+
+        public Result formCenterApi(SwaggerApiListDto swaggerApiListDto) {
+            this.swaggerApiListDto = Validate.notNull(swaggerApiListDto, "swaggerApiListDto must not be null");
+            return this;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public List<SwaggerApiListDto> getSwaggerApiListDtoList() {
+            return swaggerApiListDtoList;
+        }
+
+        public void setSwaggerApiListDtoList(List<SwaggerApiListDto> swaggerApiListDtoList) {
+            this.swaggerApiListDtoList = swaggerApiListDtoList;
+        }
+
+        public Map<String, List<ResultData>> getDefinitionMap() {
+            return definitionMap;
+        }
+
+        public void setDefinitionMap(Map<String, List<ResultData>> definitionMap) {
+            this.definitionMap = definitionMap;
+        }
+
+        public SwaggerApiListDto getSwaggerApiListDto() {
+            return swaggerApiListDto;
+        }
+
+        public void setSwaggerApiListDto(SwaggerApiListDto swaggerApiListDto) {
+            this.swaggerApiListDto = swaggerApiListDto;
+        }
+    }
+}
