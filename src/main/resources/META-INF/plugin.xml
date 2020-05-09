@@ -13,10 +13,10 @@
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
+<!--    <depends>org.jetbrains.idea.maven</depends>-->
+<!--    <depends optional="true">org.jetbrains.plugins.terminal</depends>-->
+    <depends>com.intellij.modules.java</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
-    </extensions>
 
     <actions>
         <group id="TP_Group" text="TP" description="Self function">
@@ -26,5 +26,47 @@
                     description="Translate swagger to doc">
             </action>
         </group>
+        <!-- Add your actions here -->
+        <action id="MavenHelper.OpenTerminalAction" class="krasa.mavenhelper.action.OpenTerminalAction"
+                text="Open Terminal at the Current Maven Module Path"
+                icon="/krasa/mavenhelper/icons/OpenTerminal.png">
+            <add-to-group group-id="EditorPopupMenu.Run" anchor="first"/>
+            <add-to-group group-id="ProjectViewPopupMenuRunGroup" anchor="first"/>
+            <add-to-group group-id="RunMenu" anchor="first"/>
+            <!--			<add-to-group group-id="RevealGroup" anchor="last"/>-->
+            <!--  		 	<add-to-group group-id="TouchBarDefault_alt" anchor="last"/>-->
+        </action>
+        <action id="MavenHelper.QuickRunMavenGoal" class="krasa.mavenhelper.action.QuickRunMavenGoalAction"
+                text="Run Maven Goal"
+                description="Run Maven Goal" icon="/krasa/mavenhelper/icons/runMaven.png">
+            <add-to-group group-id="RunMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt R"/>
+        </action>
+        <action id="MavenHelper.QuickRunRootMavenGoal" class="krasa.mavenhelper.action.QuickRunRootMavenGoalAction"
+                text="Run Maven Goal on Root Module"
+                description="Run Maven Goal on Root Module" icon="/krasa/mavenhelper/icons/runMaven.png">
+            <add-to-group group-id="RunMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt R"/>
+        </action>
+        <action id="MavenHelper.CreateCustomGoalAction" class="krasa.mavenhelper.action.CreateCustomGoalAction"
+                text="Run New Maven Goal..."
+                description="Run New Maven Goal..." icon="/krasa/mavenhelper/icons/runMaven.png">
+            <add-to-group group-id="RunMenu" anchor="first"/>
+        </action>
     </actions>
+
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <fileEditorProvider implementation="krasa.mavenhelper.analyzer.MyFileEditorProvider"/>
+        <applicationConfigurable instance="krasa.mavenhelper.MyConfigurable" id="MavenRunHelper"
+                                 displayName="Maven Helper"/>
+        <projectService serviceImplementation="krasa.mavenhelper.MyProjectService"/>
+        <postStartupActivity implementation="krasa.mavenhelper.ShortcutStartupActivity"/>
+        <applicationService serviceImplementation="krasa.mavenhelper.ApplicationService"/>
+    </extensions>
+
+
+
+
 </idea-plugin>

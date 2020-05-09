@@ -42,6 +42,12 @@ dependencies {
     // https://mvnrepository.com/artifact/com.intellij/forms_rt
     //swing designer ui auto generator code
     compile group: 'com.intellij', name: 'forms_rt', version: '7.0.3'
+    // https://mvnrepository.com/artifact/uk.com.robust-it/cloning
+    compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.12'
+// https://mvnrepository.com/artifact/org.apache.maven.shared/maven-shared-utils
+    compile group: 'org.apache.maven.shared', name: 'maven-shared-utils', version: '3.2.1'
+// https://mvnrepository.com/artifact/org.objenesis/objenesis
+    compile group: 'org.objenesis', name: 'objenesis', version: '3.1'
 }
 
 
