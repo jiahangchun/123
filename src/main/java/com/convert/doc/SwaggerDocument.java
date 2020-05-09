@@ -72,8 +72,7 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
             return "";
         }
         if (Objects.equals(data, "null")) {
-            return "Sorry, we can't combine JSON data based on the given parameters.\n" +
-                    "The reason may be that there is no return value in itself, or the data structure may be too complex.";
+            return "Sorry, type not supported:not support param ( param[] )";
         }
         String result = "";
         //工具的问题
@@ -149,12 +148,43 @@ public class SwaggerDocument extends MarkupComponent<SwaggerDocument.Parameters>
             switch (type) {
                 case "array":
                     List<Object> defList = Lists.newArrayList();
-                    for (int i = 0; i < 3; i++) {
+                    if (CommonUtil.isEmpty(defaultValue)) {
+                        defaultValue = "";
+                    }
+                    for (int i = 0; i < 1; i++) {
                         defList.add(JSON.toJSONString(defaultValue));
                     }
                     result = defList;
                     break;
+                case "integer":
+                    if (CommonUtil.isEmpty(defaultValue)) {
+                        defaultValue = 1;
+                    }
+                    result = defaultValue;
+                    break;
+                case "string":
+                    if (CommonUtil.isEmpty(defaultValue)) {
+                        defaultValue = "";
+                    }
+                    result = defaultValue;
+                    break;
+                case "boolean":
+                    if (CommonUtil.isEmpty(defaultValue)) {
+                        defaultValue = Boolean.TRUE;
+                    }
+                    result = defaultValue;
+                    break;
+                case "number":
+                    if (CommonUtil.isEmpty(defaultValue)) {
+                        defaultValue = 10.0;
+                    }
+                    result = defaultValue;
+                    break;
                 default:
+                    if (CommonUtil.isEmpty(defaultValue)) {
+                        defaultValue = "";
+                    }
+                    result = defaultValue;
                     break;
             }
         }

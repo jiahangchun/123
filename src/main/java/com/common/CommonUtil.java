@@ -1,15 +1,17 @@
 package com.common;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import net.sf.cglib.beans.BeanGenerator;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -26,6 +28,7 @@ import java.util.regex.Pattern;
  * @author jiahangchun
  */
 public class CommonUtil {
+
 
     private static final String ACCEPT_HEADER_VALUE = "application/json, application/yaml, */*";
     private static final String USER_AGENT_HEADER_VALUE = "Apache-HttpClient/Swagger";
@@ -280,8 +283,9 @@ public class CommonUtil {
             result = url.replaceAll("\\{", "%7B").
                     replaceAll("\\}", "%7D").
                     replaceAll(" ", "%20");
-        } catch (Exception t) {
-            t.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("error:"+ e.getMessage());
+            e.printStackTrace();
         }
         return result;
     }
@@ -307,30 +311,45 @@ public class CommonUtil {
             Object obj = generator.create();
             // 赋值
             for (Map.Entry<String, Object> en : propertyMap.entrySet()) {
+//                列表是这种格式的,比较麻烦，所以暂时不处理了
+//                PropertyUtils.setIndexedProperty(userInfo, "friendsNames[0]", "张三第一次修改");
                 org.apache.commons.beanutils.BeanUtils.setProperty(obj, en.getKey(), en.getValue());
             }
             return obj;
-        }catch (Exception e){
+        } catch (Exception e) {
+            System.err.println("error:"+ e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
 
     public static String generateObjectByFieldToStr(Map<String, Object> propertyMap) {
+        for (Map.Entry<String, Object> en : propertyMap.entrySet()) {
+            Object value=en.getValue();
+            if(CommonUtil.isEmpty(value)){
+                en.setValue("");
+            }
+        }
+
         try {
             Object object = CommonUtil.generateObjectByField(propertyMap);
             return JSON.toJSONString(object).replaceAll("$cglib_prop_", "");
         } catch (Exception e) {
+            System.err.println("error:"+ e.getMessage());
+            e.printStackTrace();
             return "";
         }
     }
 
+
     /**
      * 获取常用的类的默认返回值
+     *
      * @param type
      * @return
      */
-    public static String getDefaultValue(String type){
-        switch( type) {
+    public static String getDefaultValue(String type) {
+        switch (type) {
             case "string":
                 return "string";
             case "integer":
